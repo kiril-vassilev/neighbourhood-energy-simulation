@@ -32,6 +32,7 @@ public class SimulationEngine
         
         Console.Clear();
         Console.WriteLine($"Time: {Clock.CurrentTime}");
+        Console.WriteLine($"Season: {Clock.Season}");
         Console.WriteLine($"Temp: {context.Weather.Temperature:F1}C");
         Console.WriteLine($"Load: {Neighbourhood.CurrentLoadKw:F2} kW");
         Console.WriteLine($"Total Energy: {Neighbourhood.TotalEnergyKWh:F2} kWh");
