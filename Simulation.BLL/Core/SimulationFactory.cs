@@ -7,6 +7,10 @@ namespace Simulation.BLL.Core;
 
 public static class SimulationFactory
 {
+    public const int NumHouses = 30;
+    public const int NumPublicChargers = 6; 
+    
+
     public static SimulationEngine Create()
     {
         var rand = new Random(42);
@@ -22,7 +26,7 @@ public static class SimulationFactory
             }
         };
 
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < NumHouses; i++)
         {
             var house = new House();
 
@@ -40,7 +44,7 @@ public static class SimulationFactory
             neighbourhood.Houses.Add(house);
         }
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < NumPublicChargers; i++)
         {
             neighbourhood.PublicChargers.Add(new PublicCharger());
         }
