@@ -193,11 +193,11 @@ Represents a residential unit with a collection of energy assets.
 * Energy Assets (IEnergyAsset)
 All assets share a common interface and track power (kW) and energy (kWh).
 * Includes:
-- BaseLoad (baseline consumption)
-- HeatPump (temperature-driven demand)
-- PvSystem (solar generation, modeled as negative load)
-- EvCharger (home charging)
-- PublicCharger (shared, probabilistic usage)
+    - BaseLoad (baseline consumption)
+    - HeatPump (temperature-driven demand)
+    - PvSystem (solar generation, modeled as negative load)
+    - EvCharger (home charging)
+    - PublicCharger (shared, probabilistic usage)
 * atteryStorage
 Optional neighbourhood battery used for peak shaving via charge/discharge control.
 * SimulationContext
