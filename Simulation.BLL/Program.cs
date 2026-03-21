@@ -8,6 +8,6 @@ var sim = SimulationFactory.Create();
 
 while (true)
 {
-    sim.Step();
+    sim.Step(true);
     Thread.Sleep(200); // controls speed
 }

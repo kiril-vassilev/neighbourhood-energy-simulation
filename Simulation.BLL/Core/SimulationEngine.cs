@@ -17,7 +17,7 @@ public class SimulationEngine
         Neighbourhood = neighbourhood;
     }
 
-    public void Step()
+    public void Step(bool verbose = true)
     {
         var context = new SimulationContext
         {
@@ -28,6 +28,8 @@ public class SimulationEngine
 
         Neighbourhood.Update(context);
 
+        if (!verbose) return;
+        
         Console.Clear();
         Console.WriteLine($"Time: {Clock.CurrentTime}");
         Console.WriteLine($"Temp: {context.Weather.Temperature:F1}C");
