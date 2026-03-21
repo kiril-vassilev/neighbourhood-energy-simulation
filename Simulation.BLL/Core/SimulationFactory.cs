@@ -10,15 +10,16 @@ public static class SimulationFactory
     public static SimulationEngine Create()
     {
         var rand = new Random(42);
-        var neighbourhood = new Neighbourhood();
-
-        neighbourhood.Battery = new BatteryStorage
+        var neighbourhood = new Neighbourhood
         {
-            CapacityKWh = 200,
-            StateOfChargeKWh = 100,
-            MaxChargeKw = 30,
-            MaxDischargeKw = 30,
-            TargetLoadKw = 60
+            Battery = new BatteryStorage
+            {
+                CapacityKWh = 200,
+                StateOfChargeKWh = 100,
+                MaxChargeKw = 30,
+                MaxDischargeKw = 30,
+                TargetLoadKw = 60
+            }
         };
 
         for (int i = 0; i < 30; i++)

@@ -131,7 +131,18 @@ Ensures reproducibility while maintaining realistic seasonal influence.
 Energy is calculated as:
 
 Energy (kWh) = Power (kW) × Time (hours)
-Simulation uses 15-minute time steps (0.25 hours).
+
+## Simulation Time Step
+The simulation uses a 15-minute time step (0.25 hours).
+
+This choice is based on:
+
+Industry practice: 15-minute intervals are commonly used in energy systems and smart metering.
+Sufficient accuracy: Captures daily consumption patterns, EV charging behavior, and PV generation without unnecessary detail.
+Performance: Provides a good balance between simulation speed and realism.
+Visualization: Results in 96 data points per day, which is well-suited for charting the last 24 hours.
+
+
 Each asset tracks:
 Instantaneous power (kW)
 Cumulative energy (kWh)
@@ -191,6 +202,14 @@ To run the simulation:
 
 ```bash
 dotnet run --project Simulation.BLL
+```
+
+## Running Tests
+
+To run the unit tests:
+
+```bash
+dotnet test
 ```
 
 ## Configuration
