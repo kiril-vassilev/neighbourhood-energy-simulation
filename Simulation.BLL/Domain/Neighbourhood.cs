@@ -13,6 +13,9 @@ public class Neighbourhood
     public double CurrentLoadKw { get; private set; }
     public double TotalEnergyKWh { get; private set; }
 
+    public BatteryStorage? Battery { get; set; }
+    public double CurrentLoadWithBatteryKw { get; private set; }
+    
     public List<(DateTime time, double load)> History { get; } = new();
 
     public void Update(SimulationContext context)
@@ -26,12 +29,24 @@ public class Neighbourhood
         {
             charger.Update(context);
             total += charger.CurrentPowerKw;
-}
+        }
 
         CurrentLoadKw = total;
-        TotalEnergyKWh += total * context.StepHours;
 
-        History.Add((context.Time, total));
+        // Battery interaction
+        double batteryPower = 0;
+
+        if (Battery != null)
+        {
+            Battery.Update(context, total);
+            batteryPower = Battery.CurrentPowerKw;
+        }
+
+        CurrentLoadWithBatteryKw = total + batteryPower;
+
+        TotalEnergyKWh += CurrentLoadWithBatteryKw * context.StepHours;
+
+        History.Add((context.Time, CurrentLoadWithBatteryKw));
 
         if (History.Count > 96)
             History.RemoveAt(0);

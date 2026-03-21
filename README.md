@@ -23,117 +23,153 @@ The project is structured as follows:
 
 ## Simulation Assumptions
 
-This simulation models a simplified residential neighbourhood energy system. The goal is clarity and determinism rather than full physical accuracy. The following assumptions were made:
+This simulation models a simplified residential neighbourhood energy system. The goal is clarity, determinism, and extensibility rather than full physical accuracy. The following assumptions were made:
 
 ## EV Charging Behavior
 Home EV Chargers
 Charging occurs only during evening hours (18:00–23:00).
-Charging power is fixed at 7 kW (typical single-phase residential charger).
+Charging power is fixed at 7 kW (typical residential charger).
 Vehicles are assumed to:
-Arrive home before charging window
-Require charging every day
-No smart charging or load balancing is implemented.
+Arrive home before the charging window
+Require daily charging
+No smart charging or scheduling optimization is implemented.
 
 Rationale:
-This reflects common real-world behavior where users plug in vehicles after work, creating an evening peak.
+Represents common real-world behavior where EV charging contributes to evening peak demand.
 
 Public EV Chargers (6 units)
 Each charger operates independently.
-At each simulation step, usage is determined by a probabilistic model:
-~30% chance of being occupied
-When occupied, charger draws 22 kW (typical AC public charger).
-No queuing or reservation system is modeled.
+At each simulation step, usage is determined by a probabilistic model (~30% occupancy).
+When occupied, a charger draws 22 kW.
+No queuing, reservations, or user prioritization is modeled.
 
 Rationale:
-This provides a simple but dynamic shared infrastructure model without introducing complex agent-based behavior.
+Provides a dynamic shared infrastructure model without introducing complex agent-based simulation.
 
 ## PV (Solar Panels)
-PV generation is modeled as:
-A function of time of day (sinusoidal curve)
-Scaled by a solar factor (weather-dependent)
-Peak production occurs around midday.
-No generation at night.
+PV generation is modeled as a function of:
+Time of day (sinusoidal production curve)
+Weather (solar factor)
+Peak generation occurs around midday.
+No generation during nighttime.
 Energy Usage Model
-PV generation is first used locally to offset household consumption.
-Excess generation results in net export to the grid:
-Represented as negative load at household/neighbourhood level
-No battery storage is included.
+PV generation is first used locally to offset household demand.
+Excess generation is exported to the grid, represented as negative load at neighbourhood level.
+No battery storage is present at the household level.
 
 Rationale:
-This reflects a common grid-tied residential PV setup without storage.
+Represents a typical grid-connected residential PV system without local storage.
 
 ## Heat Pump Model
 
-Heat pump consumption is temperature-dependent:
+Heat pump consumption depends on ambient temperature:
 
-No usage when temperature > 18°C
+No consumption when temperature > 18°C
 Below 18°C, consumption increases linearly:
-Power ∝ (18 - Temperature)
-Represents space heating demand only.
-Does not model:
+Power ∝ (18 − Temperature)
+Models space heating only.
+Does not include:
 Building insulation differences
 Thermal inertia
-COP (Coefficient of Performance)
+Coefficient of performance (COP)
 
 Rationale:
-Provides a simple but effective link between weather and heating demand.
+Provides a simple but effective relationship between weather and heating demand.
+
+## Neighbourhood Battery (Peak Shaving)
+
+A shared battery is introduced to reduce peak load at neighbourhood level.
+
+Battery Characteristics
+Defined by:
+Capacity (kWh)
+State of Charge (SoC)
+Maximum charge/discharge power (kW)
+Round-trip efficiency (~95%)
+No degradation or lifecycle effects are modeled.
+Control Strategy
+The battery operates using a threshold-based peak shaving strategy:
+When neighbourhood load exceeds a predefined threshold:
+Battery discharges to reduce peak load
+When load is below the threshold:
+Battery charges (if capacity allows)
+Constraints
+Charging/discharging is limited by:
+Max power limits
+Available capacity / remaining SoC
+State of charge is updated each simulation step.
+Grid Interaction
+Battery acts at neighbourhood level, not per household.
+It reduces net load seen by the grid but does not alter individual household behavior.
+
+Rationale:
+Demonstrates a simple but realistic demand-side flexibility mechanism commonly used in smart grids.
 
 ## Base Household Consumption
-Every house has a baseline consumption profile:
+Each house has a predefined daily consumption profile:
 Morning peak (07:00–09:00)
 Evening peak (18:00–22:00)
-Low consumption overnight
+Lower demand overnight
 
 Rationale:
-Captures typical residential usage patterns.
+Represents typical residential electricity usage patterns.
 
 ## Weather & Seasonality
-Weather is synthetic and deterministic (no external API).
-Temperature is based on month (season):
+Weather is synthetic and deterministic (no external APIs).
+Temperature is determined by season (month-based):
 Winter: ~5°C
 Summer: ~22°C
 Solar production depends on:
 Time of day
-Simplified solar factor
+Simplified solar irradiance factor
 
 Rationale:
-Ensures reproducibility while still reflecting seasonal effects.
+Ensures reproducibility while maintaining realistic seasonal influence.
 
 ## Energy Accounting
 
-Energy is accumulated using:
+Energy is calculated as:
 
 Energy (kWh) = Power (kW) × Time (hours)
-Simulation uses 15-minute time steps (0.25h).
-All assets track:
+Simulation uses 15-minute time steps (0.25 hours).
+Each asset tracks:
 Instantaneous power (kW)
 Cumulative energy (kWh)
-🏘️ Neighbourhood Configuration
-30 houses (fixed)
-6 public EV chargers (fixed)
-Asset distribution (deterministic via seed):
+Neighbourhood load is tracked:
+Without battery
+With battery (net load)
+
+Rationale:
+Aligns with standard energy system modeling practices.
+
+## Neighbourhood Configuration
+Fixed configuration:
+30 houses
+6 public EV chargers
+Asset distribution (deterministic via seeded randomness):
 ~40% PV systems
 ~30% heat pumps
 ~20% home EV chargers
 
 Rationale:
-Provides realistic diversity while keeping simulation reproducible.
+Ensures reproducibility while maintaining diversity of assets.
 
 ## Limitations
-No battery storage
-No grid constraints or transformer limits
+No household-level battery storage
+No grid constraints (e.g., transformer capacity)
 No dynamic pricing or demand response
-No individual user behavior modeling
 No EV state-of-charge tracking
+No detailed building thermal modeling
+Battery uses a simple heuristic (not optimized or predictive)
 
 ## Design Philosophy
 
 The simulation prioritizes:
 
-Clarity and extensibility
-Deterministic behavior (via fixed random seed)
-Separation of concerns (assets, simulation engine, UI)
-
+Clarity and modular design (asset-based architecture)
+Deterministic behavior (fixed random seed)
+Extensibility (easy to add new assets or strategies)
+Explainability over physical accuracy
 
 ## Prerequisites
 

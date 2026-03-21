@@ -35,6 +35,11 @@ public class SimulationEngine
         Console.WriteLine($"Season: {Clock.Season}");
         Console.WriteLine($"Temp: {context.Weather.Temperature:F1}C");
         Console.WriteLine($"Load: {Neighbourhood.CurrentLoadKw:F2} kW");
+
+        Console.WriteLine($"Load (With Battery): {Neighbourhood.CurrentLoadWithBatteryKw:F2} kW");
+        Console.WriteLine($"Battery Power: {Neighbourhood.Battery?.CurrentPowerKw:F2} kW");
+        Console.WriteLine($"Battery SoC: {Neighbourhood.Battery?.StateOfChargeKWh:F2} kWh");
+
         Console.WriteLine($"Total Energy: {Neighbourhood.TotalEnergyKWh:F2} kWh");
 
         Clock.Tick();
