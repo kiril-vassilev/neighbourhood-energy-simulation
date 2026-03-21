@@ -2,9 +2,9 @@
 // Core/SimulationEngine.cs
 // =============================
 
-using Simulation.Domain;
+using Simulation.BLL.Domain;
 
-namespace Simulation.Core;
+namespace Simulation.BLL.Core;
 
 public class SimulationEngine
 {

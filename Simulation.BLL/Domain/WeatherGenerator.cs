@@ -1,7 +1,7 @@
 // =============================
 // Domain/WeatherGenerator.cs
 // =============================
-namespace Simulation.Domain;
+namespace Simulation.BLL.Domain;
 
 public static class WeatherGenerator
 {

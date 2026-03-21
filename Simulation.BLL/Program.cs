@@ -1,8 +1,8 @@
 ﻿// =============================
 // Program.cs
 // =============================
-using Simulation.Core;
-using Simulation.Domain;
+using Simulation.BLL.Core;
+using Simulation.BLL.Domain;
 
 var sim = SimulationFactory.Create();
 

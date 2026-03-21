@@ -1,7 +1,7 @@
 // =============================
 // Domain/Weather.cs
 // =============================
-namespace Simulation.Domain;
+namespace Simulation.BLL.Domain;
 
 public class Weather
 {

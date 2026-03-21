@@ -1,7 +1,7 @@
 // =============================
 // Core/SimulationClock.cs
 // =============================
-namespace Simulation.Core;
+namespace Simulation.BLL.Core;
 
 public class SimulationClock
 {

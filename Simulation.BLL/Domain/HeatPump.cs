@@ -1,9 +1,9 @@
 // =============================
 // Domain/Assets/HeatPump.cs
 // =============================
-using Simulation.Core;
+using Simulation.BLL.Core;
 
-namespace Simulation.Domain;
+namespace Simulation.BLL.Domain;
 
 public class HeatPump : IEnergyAsset
 {

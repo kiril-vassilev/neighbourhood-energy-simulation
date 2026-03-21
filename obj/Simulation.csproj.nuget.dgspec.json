@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\PROJECTS\\Simulation\\Simulation.csproj": {}
+    "C:\\PROJECTS\\NeighborhoodEnergySimulation\\Simulation.csproj": {}
   },
   "projects": {
-    "C:\\PROJECTS\\Simulation\\Simulation.csproj": {
+    "C:\\PROJECTS\\NeighborhoodEnergySimulation\\Simulation.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\PROJECTS\\Simulation\\Simulation.csproj",
+        "projectUniqueName": "C:\\PROJECTS\\NeighborhoodEnergySimulation\\Simulation.csproj",
         "projectName": "Simulation",
-        "projectPath": "C:\\PROJECTS\\Simulation\\Simulation.csproj",
+        "projectPath": "C:\\PROJECTS\\NeighborhoodEnergySimulation\\Simulation.csproj",
         "packagesPath": "C:\\Users\\vassi\\.nuget\\packages\\",
-        "outputPath": "C:\\PROJECTS\\Simulation\\obj\\",
+        "outputPath": "C:\\PROJECTS\\NeighborhoodEnergySimulation\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\vassi\\AppData\\Roaming\\NuGet\\NuGet.Config"

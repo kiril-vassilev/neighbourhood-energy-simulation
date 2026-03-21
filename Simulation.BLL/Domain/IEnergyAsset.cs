@@ -1,9 +1,9 @@
 // =============================
 // Domain/Interfaces/IEnergyAsset.cs
 // =============================
-using Simulation.Core;
+using Simulation.BLL.Core;
 
-namespace Simulation.Domain;
+namespace Simulation.BLL.Domain;
 
 public interface IEnergyAsset
 {

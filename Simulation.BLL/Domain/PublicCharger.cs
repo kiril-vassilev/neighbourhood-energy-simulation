@@ -1,18 +1,20 @@
 // =============================
-// Domain/Assets/EvCharger.cs
+// Domain/Assets/PublicCharger.cs
 // =============================
-using Simulation.Core;
+using Simulation.BLL.Core;
 
-namespace Simulation.Domain;
+namespace Simulation.BLL.Domain;
 
-public class EvCharger : IEnergyAsset
+public class PublicCharger : IEnergyAsset
 {
+    private Random _rand = new();
+
     public double CurrentPowerKw { get; private set; }
     public double TotalEnergyKWh { get; private set; }
 
     public void Update(SimulationContext ctx)
     {
-        CurrentPowerKw = (ctx.Time.Hour >= 18 && ctx.Time.Hour <= 23) ? 7 : 0;
+        CurrentPowerKw = _rand.NextDouble() > 0.7 ? 22 : 0;
         TotalEnergyKWh += CurrentPowerKw * ctx.StepHours;
     }
 }

@@ -1,9 +1,9 @@
 // =============================
 // Domain/Neighbourhood.cs
 // =============================
-using Simulation.Core;
+using Simulation.BLL.Core;
 
-namespace Simulation.Domain;
+namespace Simulation.BLL.Domain;
 
 public class Neighbourhood
 {

@@ -1,9 +1,9 @@
 // =============================
 // Core/SimulationFactory.cs
 // =============================
-using Simulation.Domain;
+using Simulation.BLL.Domain;
 
-namespace Simulation.Core;
+namespace Simulation.BLL.Core;
 
 public static class SimulationFactory
 {
