@@ -1,0 +1,14 @@
+C:\PROJECTS\Simulation\bin\Debug\net10.0\Simulation.exe
+C:\PROJECTS\Simulation\bin\Debug\net10.0\Simulation.deps.json
+C:\PROJECTS\Simulation\bin\Debug\net10.0\Simulation.runtimeconfig.json
+C:\PROJECTS\Simulation\bin\Debug\net10.0\Simulation.dll
+C:\PROJECTS\Simulation\bin\Debug\net10.0\Simulation.pdb
+C:\PROJECTS\Simulation\obj\Debug\net10.0\Simulation.GeneratedMSBuildEditorConfig.editorconfig
+C:\PROJECTS\Simulation\obj\Debug\net10.0\Simulation.AssemblyInfoInputs.cache
+C:\PROJECTS\Simulation\obj\Debug\net10.0\Simulation.AssemblyInfo.cs
+C:\PROJECTS\Simulation\obj\Debug\net10.0\Simulation.csproj.CoreCompileInputs.cache
+C:\PROJECTS\Simulation\obj\Debug\net10.0\Simulation.dll
+C:\PROJECTS\Simulation\obj\Debug\net10.0\refint\Simulation.dll
+C:\PROJECTS\Simulation\obj\Debug\net10.0\Simulation.pdb
+C:\PROJECTS\Simulation\obj\Debug\net10.0\Simulation.genruntimeconfig.cache
+C:\PROJECTS\Simulation\obj\Debug\net10.0\ref\Simulation.dll
