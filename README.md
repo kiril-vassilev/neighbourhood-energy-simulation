@@ -182,6 +182,27 @@ Deterministic behavior (fixed random seed)
 Extensibility (easy to add new assets or strategies)
 Explainability over physical accuracy
 
+## Data Model
+
+The simulation uses a modular, asset-based model:
+
+Neighbourhood
+Contains all houses, public chargers, and an optional battery. Tracks total load, energy, history, and peak values.
+House
+Represents a residential unit with a collection of energy assets.
+Energy Assets (IEnergyAsset)
+All assets share a common interface and track power (kW) and energy (kWh).
+Includes:
+BaseLoad (baseline consumption)
+HeatPump (temperature-driven demand)
+PvSystem (solar generation, modeled as negative load)
+EvCharger (home charging)
+PublicCharger (shared, probabilistic usage)
+BatteryStorage
+Optional neighbourhood battery used for peak shaving via charge/discharge control.
+SimulationContext
+Provides time, step duration, and weather data for each simulation step.
+
 ## Prerequisites
 
 - .NET 10.0 SDK
