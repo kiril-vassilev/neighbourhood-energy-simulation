@@ -186,21 +186,21 @@ Explainability over physical accuracy
 
 The simulation uses a modular, asset-based model:
 
-Neighbourhood
+* Neighbourhood
 Contains all houses, public chargers, and an optional battery. Tracks total load, energy, history, and peak values.
-House
+* House
 Represents a residential unit with a collection of energy assets.
-Energy Assets (IEnergyAsset)
+* Energy Assets (IEnergyAsset)
 All assets share a common interface and track power (kW) and energy (kWh).
-Includes:
-BaseLoad (baseline consumption)
-HeatPump (temperature-driven demand)
-PvSystem (solar generation, modeled as negative load)
-EvCharger (home charging)
-PublicCharger (shared, probabilistic usage)
-BatteryStorage
+* Includes:
+- BaseLoad (baseline consumption)
+- HeatPump (temperature-driven demand)
+- PvSystem (solar generation, modeled as negative load)
+- EvCharger (home charging)
+- PublicCharger (shared, probabilistic usage)
+* atteryStorage
 Optional neighbourhood battery used for peak shaving via charge/discharge control.
-SimulationContext
+* SimulationContext
 Provides time, step duration, and weather data for each simulation step.
 
 ## Prerequisites
