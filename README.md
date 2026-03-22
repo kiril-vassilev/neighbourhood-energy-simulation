@@ -198,7 +198,7 @@ All assets share a common interface and track power (kW) and energy (kWh).
     - PvSystem (solar generation, modeled as negative load)
     - EvCharger (home charging)
     - PublicCharger (shared, probabilistic usage)
-* atteryStorage
+* BatteryStorage
 Optional neighbourhood battery used for peak shaving via charge/discharge control.
 * SimulationContext
 Provides time, step duration, and weather data for each simulation step.

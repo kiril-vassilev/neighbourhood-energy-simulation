@@ -21,17 +21,19 @@ else
 
         <div class="card">
             <h3>Temperature</h3>
-            <p>@engine.CurrentWeather.Temperature.ToString("F1") °C</p>
+            <p>@engine.CurrentWeather.Temperature.ToString(format: "F1") °C</p>
+            <p>Season:@(engine.Clock.Season)</p>
         </div>
 
         <div class="card">
             <h3>Current Load</h3>
-            <p>@engine.Neighbourhood.CurrentLoadKw.ToString("F2") kW</p>
+            <p>@engine.Neighbourhood.CurrentLoadKw.ToString(format: "F2") kW</p>
+            <p>Peak Reduction: @((engine.Neighbourhood.PeakWithoutBattery - engine.Neighbourhood.PeakWithBattery).ToString(format: "F2")) kW</p>
         </div>
 
         <div class="card">
             <h3>Total Energy</h3>
-            <p>@engine.Neighbourhood.TotalEnergyKWh.ToString("F2") kWh</p>
+            <p>@engine.Neighbourhood.TotalEnergyKWh.ToString(format: "F2") kWh</p>
         </div>
     </div>
 
