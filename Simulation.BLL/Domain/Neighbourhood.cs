@@ -15,6 +15,9 @@ public class Neighbourhood
 
     public BatteryStorage? Battery { get; set; }
     public double CurrentLoadWithBatteryKw { get; private set; }
+
+    public double PeakWithoutBattery { get; private set; }
+    public double PeakWithBattery { get; private set; }
     
     public List<(DateTime time, double load)> History { get; } = new();
 
@@ -45,6 +48,9 @@ public class Neighbourhood
         CurrentLoadWithBatteryKw = total + batteryPower;
 
         TotalEnergyKWh += CurrentLoadWithBatteryKw * context.StepHours;
+
+        PeakWithoutBattery = Math.Max(PeakWithoutBattery, CurrentLoadKw);
+        PeakWithBattery = Math.Max(PeakWithBattery, CurrentLoadWithBatteryKw);
 
         History.Add((context.Time, CurrentLoadWithBatteryKw));
 

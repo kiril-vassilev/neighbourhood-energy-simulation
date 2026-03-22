@@ -10,4 +10,4 @@ while (true)
 {
     sim.Step(true);
     Thread.Sleep(200); // controls speed
-}
+} 

@@ -225,6 +225,22 @@ To run the simulation:
 dotnet run --project Simulation.BLL
 ```
 
+## Running the UI Visualization
+
+The repository also includes a Blazor UI that visualizes the running neighborhood simulation, including the current time, temperature, live load values, and the last 24 hours of load history.
+
+From the repository root, start the UI with:
+
+```bash
+dotnet run --project Simulation.UI
+```
+
+Then open one of the local URLs exposed by the app:
+
+- `http://localhost:5264`
+
+If you run the project in Development mode, the browser may open automatically.
+
 ## Running Tests
 
 To run the unit tests:
