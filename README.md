@@ -21,6 +21,53 @@ The project is structured as follows:
 - **Core**: Contains simulation clock, context, engine, and factory classes
 - **Domain**: Defines energy assets, neighborhood, and weather components
 
+## Next Steps
+
+The next goal is to enable “talking to the data” by extending the simulation with data storage, aggregation, and AI-driven insights.
+
+## Configuration
+
+* Centralize all simulation settings in a JSON configuration file
+*  Allow easy adjustment of:
+    - Asset distribution
+    - Battery parameters
+    - Simulation duration
+
+## Data Storage
+
+*  Run long-term simulations (e.g., 1 full year)
+*  Store results with and without battery in a database
+* Capture time-series data for:
+    - Load (kW)
+    - Energy (kWh)
+    - Battery state
+
+## Data Aggregation & Reporting
+
+* Generate aggregated datasets (e.g., JSON reports):
+- By month
+- By season
+- By temperature range
+* Compute key metrics:
+- Peak load
+- Total energy consumption
+- Peak reduction (battery impact)
+
+## AI / LLM Integration
+
+* Feed aggregated data into an LLM to enable natural language queries
+
+Example questions:
+
+“What is the best time to use the battery?”
+“How much peak load reduction does the battery provide in winter?”
+“When does the neighbourhood export the most solar energy?”
+
+## Vision
+
+Transform the simulation into an interactive decision-support tool, where users can explore energy scenarios and optimization strategies through natural language.
+
+
 ## Simulation Assumptions
 
 This simulation models a simplified residential neighbourhood energy system. The goal is clarity, determinism, and extensibility rather than full physical accuracy. The following assumptions were made:
@@ -252,49 +299,3 @@ dotnet test
 ## Configuration
 
 The simulation can be configured through the `SimulationContext` and various domain classes to adjust parameters like weather conditions, energy asset specifications, and simulation duration.
-
-## Next Steps
-
-The next goal is to enable “talking to the data” by extending the simulation with data storage, aggregation, and AI-driven insights.
-
-## Configuration
-
-* Centralize all simulation settings in a JSON configuration file
-*  Allow easy adjustment of:
-    - Asset distribution
-    - Battery parameters
-    - Simulation duration
-
-## Data Storage
-
-*  Run long-term simulations (e.g., 1 full year)
-*  Store results with and without battery in a database
-* Capture time-series data for:
-    - Load (kW)
-    - Energy (kWh)
-    - Battery state
-
-## Data Aggregation & Reporting
-
-* Generate aggregated datasets (e.g., JSON reports):
-- By month
-- By season
-- By temperature range
-* Compute key metrics:
-- Peak load
-- Total energy consumption
-- Peak reduction (battery impact)
-
-## AI / LLM Integration
-
-* Feed aggregated data into an LLM to enable natural language queries
-
-Example questions:
-
-“What is the best time to use the battery?”
-“How much peak load reduction does the battery provide in winter?”
-“When does the neighbourhood export the most solar energy?”
-
-## Vision
-
-Transform the simulation into an interactive decision-support tool, where users can explore energy scenarios and optimization strategies through natural language.
