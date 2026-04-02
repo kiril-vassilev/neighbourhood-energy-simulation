@@ -3,6 +3,8 @@
 // =============================
 
 using Simulation.BLL.Domain;
+using Simulation.DAL;
+
 
 namespace Simulation.BLL.Core;
 
@@ -11,12 +13,15 @@ public class SimulationEngine
     public SimulationClock Clock { get; }
     public Neighbourhood Neighbourhood { get; }
 
+    public bool DatabaseEnabled { set; get; }
+
     public Weather CurrentWeather => WeatherGenerator.Generate(Clock.CurrentTime);
 
-    public SimulationEngine(SimulationClock clock, Neighbourhood neighbourhood)
+    public SimulationEngine(SimulationClock clock, Neighbourhood neighbourhood, bool databaseEnabled)
     {
         Clock = clock;
         Neighbourhood = neighbourhood;
+        DatabaseEnabled = databaseEnabled;
     }
 
     public void Step(bool verbose = true)
@@ -30,6 +35,17 @@ public class SimulationEngine
 
         Neighbourhood.Update(context);
 
+        if (DatabaseEnabled)
+        {
+            try
+            {
+                HistoryRepository.Insert(context.Time, Neighbourhood.CurrentLoadWithBatteryKw);
+            }
+            catch
+            {
+                // Database persistence is best-effort and should never stop the simulation loop.
+            }
+        }
 
         if (verbose) 
         {

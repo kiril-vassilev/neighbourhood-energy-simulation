@@ -10,6 +10,7 @@ public class SimulationSettingsRoot
     public BatterySettings Battery { get; set; } = new();
     public WeatherSettings Weather { get; set; } = new();
     public RuntimeSettings Runtime { get; set; } = new();
+    public DatabaseSettings Database { get; set; } = new();
 }
 
 public class SimulationSettings
@@ -119,6 +120,12 @@ public class RuntimeSettings
 {
     public int ConsoleLoopSleepMs { get; set; } = 200;
     public int UiTimerIntervalMs { get; set; } = 500;
+}
+
+public class DatabaseSettings
+{
+    public bool Enabled { get; set; } = true;
+    public bool ClearOnStart { get; set; } = true;
 }
 
 public static class SimulationSettingsLoader

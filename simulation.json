@@ -79,5 +79,9 @@
   "runtime": {
     "consoleLoopSleepMs": 200,
     "uiTimerIntervalMs": 500
+  },
+  "database": {
+    "enabled": true,
+    "clearOnStart": true
   }
 }

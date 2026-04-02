@@ -2,6 +2,7 @@
 // Core/SimulationFactory.cs
 // =============================
 using Simulation.BLL.Domain;
+using Simulation.DAL;
 
 namespace Simulation.BLL.Core;
 
@@ -27,9 +28,15 @@ public static class SimulationFactory
             .FirstOrDefault(r => r.DefaultPowerKw.HasValue)
             ?.DefaultPowerKw ?? 0.5;
 
+        if (settings.Database.Enabled && settings.Database.ClearOnStart)
+        {
+            try { HistoryRepository.ClearHistory(); } catch { }
+        }
+
         var neighbourhood = new Neighbourhood
         {
             HistoryCapacity = settings.Simulation.HistoryPoints,
+
             Battery = new BatteryStorage
             {
                 CapacityKWh = settings.Battery.CapacityKWh,
@@ -78,6 +85,7 @@ public static class SimulationFactory
                 settings.Simulation.StartTime,
                 TimeSpan.FromMinutes(settings.Simulation.StepMinutes),
                 settings.Simulation.EndTime),
-            neighbourhood);
+            neighbourhood, 
+            settings.Database.Enabled);
     }
 }
