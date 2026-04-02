@@ -1,0 +1,72 @@
+﻿@page "/"
+
+@rendermode InteractiveServer
+
+@inject SimulationService SimService
+@inject IJSRuntime JSRuntime
+
+<h1>Neighborhood Energy Simulation</h1>
+
+@if (engine == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="grid">
+        <div class="card">
+            <h3>Time</h3>
+            <p>@engine.Clock.CurrentTime</p>
+        </div>
+
+        <div class="card">
+            <h3>Temperature</h3>
+            <p>@engine.CurrentWeather.Temperature.ToString(format: "F1") °C</p>
+            <p>Season:@(engine.Clock.Season)</p>
+        </div>
+
+        <div class="card">
+            <h3>Current Load</h3>
+            <p>@engine.Neighbourhood.CurrentLoadKw.ToString(format: "F2") kW</p>
+            <p>Peak Reduction: @((engine.Neighbourhood.PeakWithoutBattery - engine.Neighbourhood.PeakWithBattery).ToString(format: "F2")) kW</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Energy</h3>
+            <p>@engine.Neighbourhood.TotalEnergyKWh.ToString(format: "F2") kWh</p>
+        </div>
+    </div>
+
+    <h3>Last 24h Load</h3>
+    <canvas id="chart"></canvas>
+}
+
+@code {
+    private SimulationEngine? engine;
+
+
+    private async Task UpdateChart()
+    {
+        var history = engine!.Neighbourhood.History;
+
+        var labels = history.Select(h => h.time.ToString("HH:mm")).ToArray();
+        var data = history.Select(h => h.load).ToArray();
+
+        await JSRuntime.InvokeVoidAsync("energyChart.render",data, labels);
+    }
+
+    protected override void OnInitialized()
+    {
+        engine = SimService.Engine;
+
+        SimService.OnUpdated += () =>
+        {
+            InvokeAsync(StateHasChanged);
+        };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await UpdateChart();
+    }
+}

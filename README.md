@@ -21,6 +21,53 @@ The project is structured as follows:
 - **Core**: Contains simulation clock, context, engine, and factory classes
 - **Domain**: Defines energy assets, neighborhood, and weather components
 
+## Next Steps
+
+The next goal is to enable “talking to the data” by extending the simulation with data storage, aggregation, and AI-driven insights.
+
+## Configuration
+
+* Centralize all simulation settings in a JSON configuration file
+*  Allow easy adjustment of:
+    - Asset distribution
+    - Battery parameters
+    - Simulation duration
+
+## Data Storage
+
+*  Run long-term simulations (e.g., 1 full year)
+*  Store results with and without battery in a database
+* Capture time-series data for:
+    - Load (kW)
+    - Energy (kWh)
+    - Battery state
+
+## Data Aggregation & Reporting
+
+* Generate aggregated datasets (e.g., JSON reports):
+- By month
+- By season
+- By temperature range
+* Compute key metrics:
+- Peak load
+- Total energy consumption
+- Peak reduction (battery impact)
+
+## AI / LLM Integration
+
+* Feed aggregated data into an LLM to enable natural language queries
+
+Example questions:
+
+“What is the best time to use the battery?”
+“How much peak load reduction does the battery provide in winter?”
+“When does the neighbourhood export the most solar energy?”
+
+## Vision
+
+Transform the simulation into an interactive decision-support tool, where users can explore energy scenarios and optimization strategies through natural language.
+
+
 ## Simulation Assumptions
 
 This simulation models a simplified residential neighbourhood energy system. The goal is clarity, determinism, and extensibility rather than full physical accuracy. The following assumptions were made:
@@ -198,7 +245,7 @@ All assets share a common interface and track power (kW) and energy (kWh).
     - PvSystem (solar generation, modeled as negative load)
     - EvCharger (home charging)
     - PublicCharger (shared, probabilistic usage)
-* atteryStorage
+* BatteryStorage
 Optional neighbourhood battery used for peak shaving via charge/discharge control.
 * SimulationContext
 Provides time, step duration, and weather data for each simulation step.
@@ -224,6 +271,22 @@ To run the simulation:
 ```bash
 dotnet run --project Simulation.BLL
 ```
+
+## Running the UI Visualization
+
+The repository also includes a Blazor UI that visualizes the running neighborhood simulation, including the current time, temperature, live load values, and the last 24 hours of load history.
+
+From the repository root, start the UI with:
+
+```bash
+dotnet run --project Simulation.UI
+```
+
+Then open one of the local URLs exposed by the app:
+
+- `http://localhost:5264`
+
+If you run the project in Development mode, the browser may open automatically.
 
 ## Running Tests
 
