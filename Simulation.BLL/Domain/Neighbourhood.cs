@@ -9,6 +9,7 @@ public class Neighbourhood
 {
     public List<House> Houses { get; } = new();
     public List<PublicCharger> PublicChargers { get; } = new();
+    public int HistoryCapacity { get; set; } = 96;
 
     public double CurrentLoadKw { get; private set; }
     public double TotalEnergyKWh { get; private set; }
@@ -54,7 +55,7 @@ public class Neighbourhood
 
         History.Add((context.Time, CurrentLoadWithBatteryKw));
 
-        if (History.Count > 96)
+        if (History.Count > HistoryCapacity)
             History.RemoveAt(0);
     }
 }

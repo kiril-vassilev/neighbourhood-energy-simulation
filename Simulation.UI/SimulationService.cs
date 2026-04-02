@@ -11,12 +11,22 @@ public class SimulationService
 
     public SimulationService()
     {
-        _engine = SimulationFactory.Create();
+        var settings = SimulationSettingsLoader.LoadOrDefault();
+        _engine = SimulationFactory.Create(settings);
 
-        _timer = new Timer(_ =>
+        Timer? timer = null;
+        timer = new Timer(_ =>
         {
+            if (!_engine.Clock.HasRemainingTime)
+            {
+                timer?.Change(Timeout.Infinite, Timeout.Infinite);
+                return;
+            }
+
             _engine.Step(true);
             OnUpdated?.Invoke();
-        }, null, 0, 500); // speed control
+        }, null, 0, settings.Runtime.UiTimerIntervalMs);
+
+        _timer = timer;
     }
 }

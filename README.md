@@ -25,14 +25,6 @@ The project is structured as follows:
 
 The next goal is to enable “talking to the data” by extending the simulation with data storage, aggregation, and AI-driven insights.
 
-## Configuration
-
-* Centralize all simulation settings in a JSON configuration file
-*  Allow easy adjustment of:
-    - Asset distribution
-    - Battery parameters
-    - Simulation duration
-
 ## Data Storage
 
 *  Run long-term simulations (e.g., 1 full year)
@@ -298,4 +290,47 @@ dotnet test
 
 ## Configuration
 
-The simulation can be configured through the `SimulationContext` and various domain classes to adjust parameters like weather conditions, energy asset specifications, and simulation duration.
+Simulation settings are centralized in the root `simulation.json` file.
+
+The runtime reads configuration from:
+
+1. `SIMULATION_SETTINGS_PATH` environment variable (if set)
+2. `simulation.json` found by walking up from the current working directory
+3. `simulation.json` found by walking up from the app base directory
+
+If no configuration is found, built-in defaults are used.
+
+### Date Range Settings
+
+Use the `simulation` section to control start/end behavior:
+
+- `startTime`: simulation start date/time (ISO format)
+- `endTime`: simulation end date/time (ISO format) or `null`
+
+Default behavior is to run indefinitely by setting:
+
+```json
+"endTime": null
+```
+
+To run within a fixed date range, set an explicit end time, for example:
+
+```json
+"simulation": {
+    "startTime": "2024-01-01T00:00:00",
+    "endTime": "2024-12-31T23:45:00",
+    "stepMinutes": 15
+}
+```
+
+When `endTime` is set, both console and UI simulation loops stop automatically after the configured end date is reached.
+
+### Other Configurable Areas
+
+You can also configure:
+
+- Neighbourhood size and asset distribution probabilities
+- Battery capacity, SoC, power limits, efficiency, and target load
+- Asset-specific behavior (base load profile, heat pump, EV charging, PV peak)
+- Weather season base temperatures
+- Runtime loop intervals for BLL and UI

@@ -4,10 +4,11 @@
 using Simulation.BLL.Core;
 using Simulation.BLL.Domain;
 
-var sim = SimulationFactory.Create();
+var settings = SimulationSettingsLoader.LoadOrDefault();
+var sim = SimulationFactory.Create(settings);
 
-while (true)
+while (sim.Clock.HasRemainingTime)
 {
     sim.Step(true);
-    Thread.Sleep(200); // controls speed
+    Thread.Sleep(settings.Runtime.ConsoleLoopSleepMs);
 } 
