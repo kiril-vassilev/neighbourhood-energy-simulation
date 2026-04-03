@@ -2,6 +2,7 @@
 
 @rendermode InteractiveServer
 
+@using Simulation.DAL
 @inject SimulationService SimService
 @inject IJSRuntime JSRuntime
 
@@ -13,27 +14,29 @@
 }
 else
 {
+    var historyRow = GetDisplayHistoryRow();
+
     <div class="grid">
         <div class="card">
             <h3>Time</h3>
-            <p>@engine.Clock.CurrentTime</p>
+            <p>@historyRow.CurrentTime</p>
         </div>
 
         <div class="card">
             <h3>Temperature</h3>
-            <p>@engine.CurrentWeather.Temperature.ToString(format: "F1") °C</p>
-            <p>Season:@(engine.Clock.Season)</p>
+            <p>@historyRow.Temperature.ToString(format: "F1") °C</p>
+            <p>Season: @historyRow.Season</p>
         </div>
 
         <div class="card">
             <h3>Current Load</h3>
-            <p>@engine.Neighbourhood.CurrentLoadKw.ToString(format: "F2") kW</p>
-            <p>Peak Reduction: @((engine.Neighbourhood.PeakWithoutBattery - engine.Neighbourhood.PeakWithBattery).ToString(format: "F2")) kW</p>
+            <p>@historyRow.CurrentLoadKw.ToString(format: "F2") kW</p>
+            <p>Peak Reduction: @((historyRow.PeakWithoutBatteryKwh - historyRow.PeakWithBatteryKwh).ToString(format: "F2")) kW</p>
         </div>
 
         <div class="card">
             <h3>Total Energy</h3>
-            <p>@engine.Neighbourhood.TotalEnergyKWh.ToString(format: "F2") kWh</p>
+            <p>@historyRow.TotalEnergyKwh.ToString(format: "F2") kWh</p>
         </div>
     </div>
 
@@ -44,6 +47,25 @@ else
 @code {
     private SimulationEngine? engine;
 
+    private HistoryRow GetDisplayHistoryRow()
+    {
+        if (engine?.CurrentHistoryRow != null)
+            return engine.CurrentHistoryRow;
+
+        // If no history is available (e.g. at the very start), create a default row based on current engine state
+        return new HistoryRow(
+            0,
+            engine!.Clock.CurrentTime,
+            engine.Neighbourhood.CurrentLoadKw,
+            engine.Clock.Season,
+            engine.CurrentWeather.Temperature,
+            engine.Neighbourhood.CurrentLoadWithBatteryKw,
+            engine.Neighbourhood.Battery?.CurrentPowerKw ?? 0,
+            engine.Neighbourhood.Battery?.StateOfChargeKWh ?? 0,
+            engine.Neighbourhood.TotalEnergyKWh,
+            engine.Neighbourhood.PeakWithoutBattery,
+            engine.Neighbourhood.PeakWithBattery);
+    }
 
     private async Task UpdateChart()
     {
