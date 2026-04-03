@@ -8,7 +8,7 @@ public class SimulationClock
     public DateTime CurrentTime { get; private set; }
     public DateTime? EndTime { get; }
 
-    public bool HasRemainingTime => !EndTime.HasValue || CurrentTime <= EndTime.Value;
+    public bool HasRemainingTime => !EndTime.HasValue || CurrentTime <= EndTime;
 
     public string Season
     {

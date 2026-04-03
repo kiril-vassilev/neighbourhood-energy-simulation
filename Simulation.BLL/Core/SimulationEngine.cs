@@ -25,7 +25,7 @@ public class SimulationEngine
         DatabaseEnabled = databaseEnabled;
     }
 
-    public void Step(bool verbose = true)
+    public void Step(bool IsPresenting = true)
     {
         var context = new SimulationContext
         {
@@ -52,7 +52,7 @@ public class SimulationEngine
         if (DatabaseEnabled)
             HistoryRepository.Insert(CurrentHistoryRow);
 
-        if (verbose) 
+        if (IsPresenting) 
         {
             Console.Clear();
             Console.WriteLine($"Time: {CurrentHistoryRow.CurrentTime}");
