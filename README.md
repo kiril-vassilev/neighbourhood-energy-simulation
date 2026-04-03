@@ -25,15 +25,6 @@ The project is structured as follows:
 
 The next goal is to enable “talking to the data” by extending the simulation with data storage, aggregation, and AI-driven insights.
 
-## Data Storage
-
-*  Run long-term simulations (e.g., 1 full year)
-*  Store results with and without battery in a database
-* Capture time-series data for:
-    - Load (kW)
-    - Energy (kWh)
-    - Battery state
-
 ## Data Aggregation & Reporting
 
 * Generate aggregated datasets (e.g., JSON reports):
@@ -256,12 +247,50 @@ Provides time, step duration, and weather data for each simulation step.
 dotnet build
 ```
 
-## Running the Simulation
+## Running Simulation
 
-To run the simulation:
+Run the default simulation mode:
 
 ```bash
 dotnet run --project Simulation.BLL
+```
+
+Show command help:
+
+```bash
+dotnet run --project Simulation.BLL -- --help
+```
+
+Run data generation mode (all variants are supported):
+
+```bash
+dotnet run --project Simulation.BLL -- generate_data
+dotnet run --project Simulation.BLL -- generate-data
+dotnet run --project Simulation.BLL -- --generate-data
+```
+
+### Generate-data mode requirements
+
+- `simulation.endTime` must be set (not null).
+- `database.enabled` must be `true`.
+
+If one of these conditions is not met, Simulation.BLL exits with an error message.
+
+### Behavior by mode
+
+- Default mode: detailed console presentation + sleep delay (`runtime.consoleLoopSleepMs`).
+- Generate-data mode: no sleep, calls simulation steps without presentation output, and prints simple progress from 0% to 100%.
+
+### Optional: use a custom settings file
+
+You can point the app to a specific settings file with the `SIMULATION_SETTINGS_PATH` environment variable.
+
+PowerShell example:
+
+```powershell
+$env:SIMULATION_SETTINGS_PATH = "C:\path\to\simulation.json"
+dotnet run --project Simulation.BLL -- --help
+Remove-Item Env:SIMULATION_SETTINGS_PATH
 ```
 
 ## Running the UI Visualization
