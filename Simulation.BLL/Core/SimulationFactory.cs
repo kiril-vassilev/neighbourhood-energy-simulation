@@ -29,9 +29,7 @@ public static class SimulationFactory
             ?.DefaultPowerKw ?? 0.5;
 
         if (settings.Database.Enabled && settings.Database.ClearOnStart)
-        {
-            try { HistoryRepository.ClearHistory(); } catch { }
-        }
+            HistoryRepository.ClearHistory();
 
         var neighbourhood = new Neighbourhood
         {

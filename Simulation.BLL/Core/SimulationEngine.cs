@@ -35,33 +35,37 @@ public class SimulationEngine
 
         Neighbourhood.Update(context);
 
+        var historyRow = new HistoryRow(
+            0,
+            context.Time,
+            Neighbourhood.CurrentLoadKw,
+            Clock.Season,
+            context.Weather.Temperature,
+            Neighbourhood.CurrentLoadWithBatteryKw,
+            Neighbourhood.Battery?.CurrentPowerKw ?? 0,
+            Neighbourhood.Battery?.StateOfChargeKWh ?? 0,
+            Neighbourhood.TotalEnergyKWh,
+            Neighbourhood.PeakWithoutBattery,
+            Neighbourhood.PeakWithBattery);        
+
         if (DatabaseEnabled)
-        {
-            try
-            {
-                HistoryRepository.Insert(context.Time, Neighbourhood.CurrentLoadWithBatteryKw);
-            }
-            catch
-            {
-                // Database persistence is best-effort and should never stop the simulation loop.
-            }
-        }
+            HistoryRepository.Insert(historyRow);
 
         if (verbose) 
         {
             Console.Clear();
-            Console.WriteLine($"Time: {Clock.CurrentTime}");
-            Console.WriteLine($"Season: {Clock.Season}");
-            Console.WriteLine($"Temp: {context.Weather.Temperature:F1}C");
-            Console.WriteLine($"Load: {Neighbourhood.CurrentLoadKw:F2} kW");
+            Console.WriteLine($"Time: {historyRow.CurrentTime}");
+            Console.WriteLine($"Season: {historyRow.Season}");
+            Console.WriteLine($"Temp: {historyRow.Temperature:F1}C");
+            Console.WriteLine($"Load: {historyRow.CurrentLoadKw:F2} kW");
 
-            Console.WriteLine($"Load (With Battery): {Neighbourhood.CurrentLoadWithBatteryKw:F2} kW");
-            Console.WriteLine($"Battery Power: {Neighbourhood.Battery?.CurrentPowerKw:F2} kW");
-            Console.WriteLine($"Battery SoC: {Neighbourhood.Battery?.StateOfChargeKWh:F2} kWh");
-            Console.WriteLine($"Total Energy: {Neighbourhood.TotalEnergyKWh:F2} kWh");
+            Console.WriteLine($"Load (With Battery): {historyRow.CurrentLoadWithBatteryKw:F2} kW");
+            Console.WriteLine($"Battery Power: {historyRow.BatteryCurrentPowerKw:F2} kW");
+            Console.WriteLine($"Battery SoC: {historyRow.BatteryStateOfChargeKwh:F2} kWh");
+            Console.WriteLine($"Total Energy: {historyRow.TotalEnergyKwh:F2} kWh");
             
-            Console.WriteLine($"Peak Load (Without Battery): {Neighbourhood.PeakWithoutBattery:F2} kW");
-            Console.WriteLine($"Peak Load (With Battery): {Neighbourhood.PeakWithBattery:F2} kW");
+            Console.WriteLine($"Peak Load (Without Battery): {historyRow.PeakWithoutBatteryKwh:F2} kW");
+            Console.WriteLine($"Peak Load (With Battery): {historyRow.PeakWithBatteryKwh:F2} kW");
 
         }
 
