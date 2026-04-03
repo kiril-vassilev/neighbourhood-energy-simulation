@@ -142,25 +142,61 @@ public static class HistoryRepository
 
 		using var reader = command.ExecuteReader();
 		while (reader.Read())
-		{
-			var currentTime = DateTime.Parse(reader.GetString(1), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-
-			rows.Add(new HistoryRow(
-				reader.GetInt64(0),
-				currentTime,
-				reader.GetDouble(2),
-				reader.GetString(3),
-				reader.GetDouble(4),
-				reader.GetDouble(5),
-				reader.GetDouble(6),
-				reader.GetDouble(7),
-				reader.GetDouble(8),
-				reader.GetDouble(9),
-				reader.GetDouble(10)));
-		}
+			rows.Add(MapHistoryRow(reader));
 
 		rows.Reverse();
 		return rows;
+	}
+
+	public static IReadOnlyList<HistoryRow> GetAllHistory()
+	{
+		EnsureInitialized();
+
+		using var connection = new SqliteConnection(_connectionString);
+		connection.Open();
+
+		using var command = connection.CreateCommand();
+		command.CommandText = @"
+			SELECT
+				Id,
+				CurrentTime,
+				CurrentLoadKw,
+				Season,
+				Temperature,
+				CurrentLoadWithBatteryKw,
+				BatteryCurrentPowerKw,
+				BatteryStateOfChargeKwh,
+				TotalEnergyKwh,
+				PeakWithoutBatteryKwh,
+				PeakWithBatteryKwh
+			FROM History
+			ORDER BY Id;";
+
+		var rows = new List<HistoryRow>();
+
+		using var reader = command.ExecuteReader();
+		while (reader.Read())
+			rows.Add(MapHistoryRow(reader));
+
+		return rows;
+	}
+
+	private static HistoryRow MapHistoryRow(SqliteDataReader reader)
+	{
+		var currentTime = DateTime.Parse(reader.GetString(1), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+
+		return new HistoryRow(
+			reader.GetInt64(0),
+			currentTime,
+			reader.GetDouble(2),
+			reader.GetString(3),
+			reader.GetDouble(4),
+			reader.GetDouble(5),
+			reader.GetDouble(6),
+			reader.GetDouble(7),
+			reader.GetDouble(8),
+			reader.GetDouble(9),
+			reader.GetDouble(10));
 	}
 
 	private static void EnsureInitialized()
