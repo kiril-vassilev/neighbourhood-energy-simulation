@@ -20,6 +20,7 @@ public class Neighbourhood
     public double PeakWithoutBattery { get; private set; }
     public double PeakWithBattery { get; private set; }
     
+    // Used ONLY for runtime UI visualization, not for reporting or analysis
     public List<(DateTime time, double load)> History { get; } = new();
 
     public void Update(SimulationContext context)

@@ -63,6 +63,10 @@ public class SimulationEngine
             Console.WriteLine($"Load (With Battery): {CurrentHistoryRow.CurrentLoadWithBatteryKw:F2} kW");
             Console.WriteLine($"Battery Power: {CurrentHistoryRow.BatteryCurrentPowerKw:F2} kW");
             Console.WriteLine($"Battery SoC: {CurrentHistoryRow.BatteryStateOfChargeKwh:F2} kWh");
+            
+            //extra info for battery state
+            Console.WriteLine($"Battery State: {Neighbourhood.Battery?.State ?? "Idle"}");
+            
             Console.WriteLine($"Total Energy: {CurrentHistoryRow.TotalEnergyKwh:F2} kWh");
             
             Console.WriteLine($"Peak Load (Without Battery): {CurrentHistoryRow.PeakWithoutBatteryKwh:F2} kW");

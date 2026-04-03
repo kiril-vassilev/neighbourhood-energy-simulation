@@ -13,13 +13,14 @@ public class BatteryStorage : IEnergyAsset
 
     public double MaxChargeKw { get; set; } = 20;
     public double MaxDischargeKw { get; set; } = 20;
+    public double TargetLoadKw { get; set; } = 50;
 
     public double Efficiency { get; set; } = 0.95;
 
     public double CurrentPowerKw { get; private set; }
     public double TotalEnergyKWh { get; private set; }
 
-    public double TargetLoadKw { get; set; } = 50;
+    public string State { get; private set; } = "Idle";
 
     public void Update(SimulationContext ctx, double currentNeighbourhoodLoadKw)
     {
@@ -28,11 +29,13 @@ public class BatteryStorage : IEnergyAsset
         if (currentNeighbourhoodLoadKw > TargetLoadKw)
         {
             // DISCHARGE (reduce peak)
+            State = "Discharging";
             desiredPower = -(currentNeighbourhoodLoadKw - TargetLoadKw);
         }
         else if (currentNeighbourhoodLoadKw < TargetLoadKw)
         {
             // CHARGE (store excess / low load)
+            State = "Charging";
             desiredPower = (TargetLoadKw - currentNeighbourhoodLoadKw);
         }
 
@@ -44,12 +47,14 @@ public class BatteryStorage : IEnergyAsset
         {
             double maxPossible = StateOfChargeKWh / ctx.StepHours;
             desiredPower = Math.Max(desiredPower, -maxPossible);
+            if (desiredPower == -maxPossible) State = "Discharging (Empty)";
         }
         else // charging
         {
             double remainingCapacity = CapacityKWh - StateOfChargeKWh;
             double maxPossible = remainingCapacity / ctx.StepHours;
             desiredPower = Math.Min(desiredPower, maxPossible);
+            if (desiredPower == maxPossible) State = "Charging (Full)";
         }
 
         CurrentPowerKw = desiredPower;

@@ -1,10 +1,11 @@
+using System.Runtime.InteropServices;
 using Simulation.DAL;
 
 namespace Simulation.REPORT;
 
 public static class HistoryTableReport
 {
-	public static void WriteTo(TextWriter writer, IReadOnlyList<HistoryRow> rows)
+	public static void WriteTo(TextWriter writer, IReadOnlyList<HistoryRow> rows, int firstNRows = -1)
 	{
 		if (rows.Count == 0)
 		{
@@ -21,7 +22,7 @@ public static class HistoryTableReport
 		writer.WriteLine(
 			"---+---------------------+--------+-------+--------+-------------------+----------------+----------------+----------------+----------------------+------------------");
 
-		foreach (var row in rows)
+		foreach (var row in rows.Take(firstNRows == -1 ? rows.Count : firstNRows))
 		{
 			writer.WriteLine(
 				$"{row.Id,2} | {row.CurrentTime:yyyy-MM-dd HH:mm:ss} | {row.Season,-6} | {row.Temperature,5:F1} | {row.CurrentLoadKw,6:F2} | {row.CurrentLoadWithBatteryKw,17:F2} | {row.BatteryCurrentPowerKw,14:F2} | {row.BatteryStateOfChargeKwh,14:F2} | {row.TotalEnergyKwh,14:F2} | {row.PeakWithoutBatteryKwh,20:F2} | {row.PeakWithBatteryKwh,16:F2}");

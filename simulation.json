@@ -1,7 +1,7 @@
 {
   "simulation": {
     "startTime": "2024-01-01T00:00:00",
-    "endTime": "2024-01-02T00:00:00",
+    "endTime": "2025-01-01T00:00:00",
     "stepMinutes": 15,
     "randomSeed": 42,
     "historyPoints": 96
@@ -56,11 +56,11 @@
     }
   },
   "battery": {
-    "capacityKWh": 200,
+    "capacityKWh": 500,
     "stateOfChargeKWh": 100,
     "maxChargeKw": 30,
     "maxDischargeKw": 30,
-    "targetLoadKw": 60,
+    "targetLoadKw": 150,
     "efficiency": 0.95,
     "control": {
       "strategy": "threshold_peak_shaving",
@@ -81,7 +81,7 @@
     "uiTimerIntervalMs": 500
   },
   "database": {
-    "enabled": true,
-    "clearOnStart": true
+    "enabled": false,
+    "clearOnStart": false
   }
 }
