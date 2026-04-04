@@ -1,6 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\Simulation.BLL\Simulation.BLL.csproj" />
     <ProjectReference Include="..\Simulation.DAL\Simulation.DAL.csproj" />
   </ItemGroup>
 

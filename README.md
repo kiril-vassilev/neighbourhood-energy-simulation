@@ -18,40 +18,16 @@ This project simulates various energy assets and their interactions within a nei
 The project is structured as follows:
 
 - **Simulation.BLL**: Business logic layer containing the core simulation engine, domain models, and main program
-- **Core**: Contains simulation clock, context, engine, and factory classes
-- **Domain**: Defines energy assets, neighborhood, and weather components
+  - **Core**: Contains simulation clock, context, engine, and factory classes
+  - **Domain**: Defines energy assets, neighborhood, and weather components
+- **Simulation.DAL**: Data access layer; responsible for persisting and retrieving simulation history from the database
+- **Simulation.REPORT**: CLI reporting tool; generates summary, per-season, and tabular history reports from stored data
+- **Simulation.UI**: Blazor web UI that visualizes the live simulation, including current load, temperature, and 24-hour history charts
+- **Simulation.TEST**: Unit test project covering energy calculations, domain models, and simulation behavior
 
 ## Next Steps
 
 The next goal is to enable “talking to the data” by extending the simulation with data storage, aggregation, and AI-driven insights.
-
-## Configuration
-
-* Centralize all simulation settings in a JSON configuration file
-*  Allow easy adjustment of:
-    - Asset distribution
-    - Battery parameters
-    - Simulation duration
-
-## Data Storage
-
-*  Run long-term simulations (e.g., 1 full year)
-*  Store results with and without battery in a database
-* Capture time-series data for:
-    - Load (kW)
-    - Energy (kWh)
-    - Battery state
-
-## Data Aggregation & Reporting
-
-* Generate aggregated datasets (e.g., JSON reports):
-- By month
-- By season
-- By temperature range
-* Compute key metrics:
-- Peak load
-- Total energy consumption
-- Peak reduction (battery impact)
 
 ## AI / LLM Integration
 
@@ -124,33 +100,81 @@ Rationale:
 Provides a simple but effective relationship between weather and heating demand.
 
 ## Neighbourhood Battery (Peak Shaving)
-
-A shared battery is introduced to reduce peak load at neighbourhood level.
-
 Battery Characteristics
-Defined by:
-Capacity (kWh)
-State of Charge (SoC)
-Maximum charge/discharge power (kW)
-Round-trip efficiency (~95%)
-No degradation or lifecycle effects are modeled.
-Control Strategy
-The battery operates using a threshold-based peak shaving strategy:
-When neighbourhood load exceeds a predefined threshold:
-Battery discharges to reduce peak load
-When load is below the threshold:
-Battery charges (if capacity allows)
-Constraints
-Charging/discharging is limited by:
-Max power limits
-Available capacity / remaining SoC
-State of charge is updated each simulation step.
-Grid Interaction
-Battery acts at neighbourhood level, not per household.
-It reduces net load seen by the grid but does not alter individual household behavior.
 
-Rationale:
-Demonstrates a simple but realistic demand-side flexibility mechanism commonly used in smart grids.
+The battery is modeled as a centralized neighbourhood asset with the following properties:
+
+Capacity (kWh) — total stored energy capacity
+State of Charge (SoC, kWh) — current stored energy
+Maximum charge/discharge power (kW) — limits instantaneous power flow
+Round-trip efficiency (~90–95%) — modeled explicitly via charge and discharge losses
+
+Efficiency is applied asymmetrically:
+
+Charging stores less energy than drawn from the grid
+Discharging delivers less energy than removed from the battery
+
+This ensures energy conservation and realistic loss modeling.
+
+Battery degradation and lifecycle effects are not modeled.
+
+Control Strategy
+
+The battery uses a threshold-based peak shaving strategy with deadband control.
+
+When neighbourhood load exceeds the upper threshold:
+The battery discharges to reduce peak load
+When load is below the lower threshold:
+The battery charges, if capacity allows
+When load is within the deadband:
+The battery remains idle
+
+This prevents oscillations and avoids artificial load amplification.
+
+Constraints
+
+Battery operation is constrained by:
+
+Power limits
+Charge ≤ MaxChargekW
+Discharge ≤ MaxDischargekW
+State of Charge (SoC)
+Cannot exceed capacity
+Cannot drop below zero
+Efficiency-aware limits
+Maximum charge/discharge power is adjusted based on available SoC and efficiency
+
+State of charge is updated at each simulation step using:
+
+Charging: SoC += P × Δt × η
+Discharging: SoC += P × Δt / η
+Energy Accounting
+
+The simulation tracks:
+
+Total charged energy (kWh)
+Total discharged energy (kWh)
+Total battery throughput (kWh)
+System-level energy losses
+
+Energy balance is enforced:
+
+Total energy with battery = baseline consumption + battery losses
+
+Grid Interaction
+The battery operates at the neighbourhood level, not per household
+It modifies the aggregate load profile seen by the grid
+Individual household consumption remains unchanged
+
+The primary effects are:
+
+Peak load reduction
+Load smoothing (reduced variability)
+Increased total energy consumption due to efficiency losses
+Key Insights
+Peak reduction is primarily limited by battery power (kW), not capacity (kWh)
+Battery utilization depends on load variability and threshold selection
+Larger batteries may be underutilized if peak events are infrequent
 
 ## Base Household Consumption
 Each house has a predefined daily consumption profile:
@@ -264,12 +288,50 @@ Provides time, step duration, and weather data for each simulation step.
 dotnet build
 ```
 
-## Running the Simulation
+## Running Simulation
 
-To run the simulation:
+Run the default simulation mode:
 
 ```bash
 dotnet run --project Simulation.BLL
+```
+
+Show command help:
+
+```bash
+dotnet run --project Simulation.BLL -- --help
+```
+
+Run data generation mode (all variants are supported):
+
+```bash
+dotnet run --project Simulation.BLL -- generate_data
+dotnet run --project Simulation.BLL -- generate-data
+dotnet run --project Simulation.BLL -- --generate-data
+```
+
+### Generate-data mode requirements
+
+- `simulation.endTime` must be set (not null).
+- `database.enabled` must be `true`.
+
+If one of these conditions is not met, Simulation.BLL exits with an error message.
+
+### Behavior by mode
+
+- Default mode: detailed console presentation + sleep delay (`runtime.consoleLoopSleepMs`).
+- Generate-data mode: no sleep, calls simulation steps without presentation output, and prints simple progress from 0% to 100%.
+
+### Optional: use a custom settings file
+
+You can point the app to a specific settings file with the `SIMULATION_SETTINGS_PATH` environment variable.
+
+PowerShell example:
+
+```powershell
+$env:SIMULATION_SETTINGS_PATH = "C:\path\to\simulation.json"
+dotnet run --project Simulation.BLL -- --help
+Remove-Item Env:SIMULATION_SETTINGS_PATH
 ```
 
 ## Running the UI Visualization
@@ -296,6 +358,80 @@ To run the unit tests:
 dotnet test
 ```
 
+## Running Reports
+
+The `Simulation.REPORT` project is a CLI tool for generating reports from the simulation history stored in the database.
+
+Show command help (also shown when no parameter is provided):
+
+```bash
+dotnet run --project Simulation.REPORT -- help
+dotnet run --project Simulation.REPORT
+```
+
+### Available Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `1` | Print History Summary Report |
+| `2` | Print History Summary Report per Season |
+| `3` | Print History Report (first 100 rows) |
+| `help` | Show help message |
+
+### Examples
+
+```bash
+dotnet run --project Simulation.REPORT -- 1
+dotnet run --project Simulation.REPORT -- 2
+dotnet run --project Simulation.REPORT -- 3
+dotnet run --project Simulation.REPORT -- help
+```
+
+> **Note:** The database must be populated first by running `Simulation.BLL` in generate-data mode before reports can show data.
+
 ## Configuration
 
-The simulation can be configured through the `SimulationContext` and various domain classes to adjust parameters like weather conditions, energy asset specifications, and simulation duration.
+Simulation settings are centralized in the root `simulation.json` file.
+
+The runtime reads configuration from:
+
+1. `SIMULATION_SETTINGS_PATH` environment variable (if set)
+2. `simulation.json` found by walking up from the current working directory
+3. `simulation.json` found by walking up from the app base directory
+
+If no configuration is found, built-in defaults are used.
+
+### Date Range Settings
+
+Use the `simulation` section to control start/end behavior:
+
+- `startTime`: simulation start date/time (ISO format)
+- `endTime`: simulation end date/time (ISO format) or `null`
+
+Default behavior is to run indefinitely by setting:
+
+```json
+"endTime": null
+```
+
+To run within a fixed date range, set an explicit end time, for example:
+
+```json
+"simulation": {
+    "startTime": "2024-01-01T00:00:00",
+    "endTime": "2024-12-31T23:45:00",
+    "stepMinutes": 15
+}
+```
+
+When `endTime` is set, both console and UI simulation loops stop automatically after the configured end date is reached.
+
+### Other Configurable Areas
+
+You can also configure:
+
+- Neighbourhood size and asset distribution probabilities
+- Battery capacity, SoC, power limits, efficiency, and target load
+- Asset-specific behavior (base load profile, heat pump, EV charging, PV peak)
+- Weather season base temperatures
+- Runtime loop intervals for BLL and UI

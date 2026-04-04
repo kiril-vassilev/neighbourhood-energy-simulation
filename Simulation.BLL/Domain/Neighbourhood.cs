@@ -9,6 +9,7 @@ public class Neighbourhood
 {
     public List<House> Houses { get; } = new();
     public List<PublicCharger> PublicChargers { get; } = new();
+    public int HistoryCapacity { get; set; } = 96;
 
     public double CurrentLoadKw { get; private set; }
     public double TotalEnergyKWh { get; private set; }
@@ -19,6 +20,7 @@ public class Neighbourhood
     public double PeakWithoutBattery { get; private set; }
     public double PeakWithBattery { get; private set; }
     
+    // Used ONLY for runtime UI visualization, not for reporting or analysis
     public List<(DateTime time, double load)> History { get; } = new();
 
     public void Update(SimulationContext context)
@@ -54,7 +56,7 @@ public class Neighbourhood
 
         History.Add((context.Time, CurrentLoadWithBatteryKw));
 
-        if (History.Count > 96)
+        if (History.Count > HistoryCapacity)
             History.RemoveAt(0);
     }
 }
