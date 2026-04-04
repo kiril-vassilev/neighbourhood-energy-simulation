@@ -24,7 +24,18 @@ public static class HistorySummaryReport
 
 		double peakWithoutBatteryKw = rows.Max(r => r.CurrentLoadKw);
 		double peakWithBatteryKw = rows.Max(r => r.CurrentLoadWithBatteryKw);
+		
+		double averageWithoutBatteryKw = rows.Average(r => r.CurrentLoadKw);
+		double averageWithBatteryKw = rows.Average(r => r.CurrentLoadWithBatteryKw);
+
+		double stdWithoudBatteryKw = Math.Sqrt(rows.Average(r => Math.Pow(r.CurrentLoadKw - averageWithoutBatteryKw, 2)));
+		double stdWithBatteryKw = Math.Sqrt(rows.Average(r => Math.Pow(r.CurrentLoadWithBatteryKw - averageWithBatteryKw, 2)));
+
+		double highPeakHoursPerMonthWithoutBattery = MathHelper.HighPeakHoursPerMonth_WithoutBattery(rows, stepHours);
+		double batteryUtilizationPercent = MathHelper.BatteryUtlizationPercent(rows, stepHours);
+
 		double peakReductionKw = peakWithoutBatteryKw - peakWithBatteryKw;
+
 		double peakReductionPercent = peakWithoutBatteryKw > 0
 			? (peakReductionKw / peakWithoutBatteryKw) * 100.0
 			: 0;
@@ -37,11 +48,20 @@ public static class HistorySummaryReport
 		writer.WriteLine($"Battery throughput energy:    {batteryThroughputKwh:F2} kWh");
 		writer.WriteLine($"Peak load without battery:    {peakWithoutBatteryKw:F2} kW");
 		writer.WriteLine($"Peak load with battery:       {peakWithBatteryKw:F2} kW");
+		writer.WriteLine($"Average load without battery: {averageWithoutBatteryKw:F2} kW");
+		writer.WriteLine($"Average load with battery:    {averageWithBatteryKw:F2} kW");
+		writer.WriteLine($"Std dev without battery:      {stdWithoudBatteryKw:F2} kW");
+		writer.WriteLine($"Std dev with battery:         {stdWithBatteryKw:F2} kW");
+		writer.WriteLine($"High peak hours per month:    {highPeakHoursPerMonthWithoutBattery:F2} h");
+		writer.WriteLine($"Battery utilization:          {batteryUtilizationPercent:F2}%");
 		writer.WriteLine($"Peak reduction:               {peakReductionKw:F2} kW ({peakReductionPercent:F2}%)");
 	}
 
 	private static double InferStepHours(IReadOnlyList<HistoryRow> rows)
 	{
+		// Infer step size by looking at time differences between consecutive records
+		// Be default to 15 minutes if we can't infer from data
+		
 		if (rows.Count < 2)
 			return 0.25;
 
