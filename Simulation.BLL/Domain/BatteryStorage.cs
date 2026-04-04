@@ -14,10 +14,11 @@ public class BatteryStorage : IEnergyAsset
     public double MaxChargeKw { get; set; } = 20;
     public double MaxDischargeKw { get; set; } = 20;
     public double TargetLoadKw { get; set; } = 50;
-
     public double Efficiency { get; set; } = 0.95;
+    public double DeadBandKw { get; set; } = 10;
 
     public double CurrentPowerKw { get; private set; }
+
     public double TotalEnergyKWh { get; private set; }
 
     public string State { get; private set; } = "Idle";
@@ -25,42 +26,57 @@ public class BatteryStorage : IEnergyAsset
     public void Update(SimulationContext ctx, double currentNeighbourhoodLoadKw)
     {
         double desiredPower = 0;
+        
 
-        if (currentNeighbourhoodLoadKw > TargetLoadKw)
+        if (currentNeighbourhoodLoadKw > TargetLoadKw + DeadBandKw)
         {
-            // DISCHARGE (reduce peak)
             State = "Discharging";
             desiredPower = -(currentNeighbourhoodLoadKw - TargetLoadKw);
         }
-        else if (currentNeighbourhoodLoadKw < TargetLoadKw)
+        else if (currentNeighbourhoodLoadKw < TargetLoadKw - DeadBandKw)
         {
-            // CHARGE (store excess / low load)
             State = "Charging";
             desiredPower = (TargetLoadKw - currentNeighbourhoodLoadKw);
+        }
+        else
+        {
+            State = "Idle";
+            desiredPower = 0;
         }
 
         // Clamp to limits
         desiredPower = Math.Clamp(desiredPower, -MaxDischargeKw, MaxChargeKw);
 
         // Apply SoC constraints
-        if (desiredPower < 0) // discharging
+        if (desiredPower < 0) 
         {
-            double maxPossible = StateOfChargeKWh / ctx.StepHours;
+            // discharging
+            double maxPossible = (StateOfChargeKWh * Efficiency) / ctx.StepHours;
             desiredPower = Math.Max(desiredPower, -maxPossible);
             if (desiredPower == -maxPossible) State = "Discharging (Empty)";
         }
-        else // charging
+        else 
         {
+            // charging
             double remainingCapacity = CapacityKWh - StateOfChargeKWh;
-            double maxPossible = remainingCapacity / ctx.StepHours;
+            double maxPossible = (remainingCapacity / Efficiency) / ctx.StepHours;
             desiredPower = Math.Min(desiredPower, maxPossible);
             if (desiredPower == maxPossible) State = "Charging (Full)";
         }
 
         CurrentPowerKw = desiredPower;
 
-        // Update SoC
-        StateOfChargeKWh += CurrentPowerKw * ctx.StepHours * Efficiency;
+        // Update SoC and track energy throughput 
+        if (CurrentPowerKw < 0)
+        {
+            // Discharging: reduce SoC by actual energy delivered (accounting for efficiency)
+            StateOfChargeKWh += CurrentPowerKw * ctx.StepHours / Efficiency;
+        }
+        else
+        {
+            // Charging: increase SoC by actual energy stored (accounting for efficiency)
+            StateOfChargeKWh += CurrentPowerKw * ctx.StepHours * Efficiency;
+        }
 
         // Track energy throughput
         TotalEnergyKWh += Math.Abs(CurrentPowerKw) * ctx.StepHours;

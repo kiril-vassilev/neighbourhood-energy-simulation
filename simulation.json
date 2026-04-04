@@ -1,7 +1,7 @@
 {
   "simulation": {
     "startTime": "2024-01-01T00:00:00",
-    "endTime": "2025-01-01T00:00:00",
+    "endTime": "2024-12-31T00:00:00",
     "stepMinutes": 15,
     "randomSeed": 42,
     "historyPoints": 96
@@ -61,7 +61,8 @@
     "maxChargeKw": 30,
     "maxDischargeKw": 30,
     "targetLoadKw": 150,
-    "efficiency": 0.95,
+    "efficiency": 0.95,    
+    "deadBandKw": 10,    
     "control": {
       "strategy": "threshold_peak_shaving",
       "desiredPowerFormula": "if load > target then -(load-target), else if load < target then (target-load), then clamp to power and SoC constraints"
@@ -81,7 +82,7 @@
     "uiTimerIntervalMs": 500
   },
   "database": {
-    "enabled": false,
-    "clearOnStart": false
+    "enabled": true,
+    "clearOnStart": true
   }
 }

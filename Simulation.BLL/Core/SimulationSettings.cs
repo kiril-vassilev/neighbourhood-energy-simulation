@@ -101,6 +101,7 @@ public class BatterySettings
     public double MaxDischargeKw { get; set; } = 30;
     public double TargetLoadKw { get; set; } = 60;
     public double Efficiency { get; set; } = 0.95;
+    public double DeadBandKw { get; set; } = 10;
 }
 
 public class WeatherSettings

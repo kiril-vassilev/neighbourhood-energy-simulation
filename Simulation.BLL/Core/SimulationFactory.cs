@@ -42,7 +42,8 @@ public static class SimulationFactory
                 MaxChargeKw = settings.Battery.MaxChargeKw,
                 MaxDischargeKw = settings.Battery.MaxDischargeKw,
                 TargetLoadKw = settings.Battery.TargetLoadKw,
-                Efficiency = settings.Battery.Efficiency
+                Efficiency = settings.Battery.Efficiency,
+                DeadBandKw = settings.Battery.DeadBandKw
             }
         };
 
