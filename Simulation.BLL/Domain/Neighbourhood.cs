@@ -21,7 +21,7 @@ public class Neighbourhood
     public double PeakWithBattery { get; private set; }
     
     // Used ONLY for runtime UI visualization, not for reporting or analysis
-    public List<(DateTime time, double load)> History { get; } = new();
+    public List<(DateTime time, double load, double loadWithBattery)> History { get; } = new();
 
     public void Update(SimulationContext context)
     {
@@ -54,7 +54,7 @@ public class Neighbourhood
         PeakWithoutBattery = Math.Max(PeakWithoutBattery, CurrentLoadKw);
         PeakWithBattery = Math.Max(PeakWithBattery, CurrentLoadWithBatteryKw);
 
-        History.Add((context.Time, CurrentLoadWithBatteryKw));
+        History.Add((context.Time, CurrentLoadKw, CurrentLoadWithBatteryKw));
 
         if (History.Count > HistoryCapacity)
             History.RemoveAt(0);

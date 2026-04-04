@@ -42,7 +42,7 @@ else
         </div>
     </div>
 
-    <h3>Last 24h Load (With Battery)</h3>
+    <h3>Last 24h Load</h3>
     <canvas id="chart"></canvas>
 }
 
@@ -75,8 +75,9 @@ else
 
         var labels = history.Select(h => h.time.ToString("HH:mm")).ToArray();
         var data = history.Select(h => h.load).ToArray();
+        var dataWithBattery = history.Select(h => h.loadWithBattery).ToArray();
 
-        await JSRuntime.InvokeVoidAsync("energyChart.render",data, labels);
+        await JSRuntime.InvokeVoidAsync("energyChart.render", data, dataWithBattery, labels);
     }
 
     protected override void OnInitialized()
