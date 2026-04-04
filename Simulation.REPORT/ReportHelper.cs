@@ -19,6 +19,7 @@ public sealed record ReportStats(
 	double StdDevWithoutBatteryKw,
 	double StdDevWithBatteryKw,
 	double HighPeakHoursPerMonth,
+	double BatteryCapacityKwh,
 	double BatteryUtilizationPercent,
 	double PeakReductionKw,
 	double PeakReductionPercent);
@@ -75,7 +76,7 @@ public static class ReportHelper
             : 0;
     }    
 
-	public static ReportStats ComputeStats(IReadOnlyList<HistoryRow> rows)
+	public static ReportStats ComputeStats(IReadOnlyList<HistoryRow> rows, int stepMinutes, double batteryCapacityKwh)
 	{
 		if (rows.Count == 0)
 		{
@@ -96,15 +97,13 @@ public static class ReportHelper
 				StdDevWithoutBatteryKw: 0,
 				StdDevWithBatteryKw: 0,
 				HighPeakHoursPerMonth: 0,
+				BatteryCapacityKwh: batteryCapacityKwh,
 				BatteryUtilizationPercent: 0,
 				PeakReductionKw: 0,
 				PeakReductionPercent: 0);
 		}
 
-        int stepMinutes = 15; // configuration
-        double batteryCapacityKwh = 500; // configuration
-
-        double stepHours = stepMinutes / 60.0; 
+        double stepHours = stepMinutes / 60.0;
 
 
 		double totalEnergyWithoutBatteryKwh = rows.Sum(r => r.CurrentLoadKw * stepHours);
@@ -153,6 +152,7 @@ public static class ReportHelper
 			StdDevWithoutBatteryKw: stdDevWithoutBatteryKw,
 			StdDevWithBatteryKw: stdDevWithBatteryKw,
 			HighPeakHoursPerMonth: highPeakHoursPerMonth,
+			BatteryCapacityKwh: batteryCapacityKwh,
 			BatteryUtilizationPercent: batteryUtilizationPercent,
 			PeakReductionKw: peakReductionKw,
 			PeakReductionPercent: peakReductionPercent);
@@ -162,7 +162,9 @@ public static class ReportHelper
 	{
 		writer.WriteLine($"Rows: {s.RowCount}");
 		writer.WriteLine($"Period: {s.FirstTime:yyyy-MM-dd HH:mm:ss} -> {s.LastTime:yyyy-MM-dd HH:mm:ss}");
-		writer.WriteLine($"Estimated step size: {s.StepHours:F2} h");
+		writer.WriteLine($"Step size: {s.StepHours:F2} h");
+		writer.WriteLine($"Battery capacity: {s.BatteryCapacityKwh:F2} kWh");
+		writer.WriteLine("---------------------------------------------------------------------------");
 		writer.WriteLine($"Total energy without battery:    {s.TotalEnergyWithoutBatteryKwh:F2} kWh");
 		writer.WriteLine($"Total energy with battery:       {s.TotalEnergyWithBatteryKwh:F2} kWh");
 		writer.WriteLine($"Battery throughput energy:       {s.BatteryThroughputKwh:F2} kWh");

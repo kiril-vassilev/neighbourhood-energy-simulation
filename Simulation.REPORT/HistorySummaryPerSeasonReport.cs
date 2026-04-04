@@ -1,10 +1,11 @@
+using System.Text.Json;
 using Simulation.DAL;
 
 namespace Simulation.REPORT;
 
 public static class HistorySummaryPerSeasonReport
 {
-	public static void WriteTo(TextWriter writer, IReadOnlyList<HistoryRow> rows)
+	public static void WriteTo(TextWriter writer, IReadOnlyList<HistoryRow> rows, int stepMinutes, double batteryCapacityKwh)
 	{
 		writer.WriteLine("Summary per Season report");
 
@@ -24,8 +25,23 @@ public static class HistorySummaryPerSeasonReport
 			writer.WriteLine($"--- Season: {group.Key} ---");
 
 			var seasonRows = (IReadOnlyList<HistoryRow>)group.ToList();
-			var stats = ReportHelper.ComputeStats(seasonRows);
+			var stats = ReportHelper.ComputeStats(seasonRows, stepMinutes, batteryCapacityKwh);
 			ReportHelper.WriteStatsTo(writer, stats);
 		}
+	}
+
+	public static string GetJson(IReadOnlyList<HistoryRow> rows, int stepMinutes, double batteryCapacityKwh)
+	{
+		if (rows.Count == 0)
+			return "{}";
+
+		var result = rows
+			.GroupBy(r => r.Season)
+			.OrderBy(g => g.Key)
+			.ToDictionary(
+				g => g.Key,
+				g => ReportHelper.ComputeStats((IReadOnlyList<HistoryRow>)g.ToList(), stepMinutes, batteryCapacityKwh));
+
+		return JsonSerializer.Serialize(result);
 	}
 }
