@@ -1,7 +1,3 @@
-// =============================
-// Core/SimulationEngine.cs
-// =============================
-
 using Simulation.BLL.Domain;
 using Simulation.DAL;
 
@@ -14,15 +10,16 @@ public class SimulationEngine
     public Neighbourhood Neighbourhood { get; }
     public HistoryRow? CurrentHistoryRow { get; private set; }
 
-    public bool DatabaseEnabled { set; get; }
+    public int HistoryCapacity { get; } = 96; // Store last 96 records (24 hours with 15-minute steps) used ONLY for runtime UI visualization
+    public List<HistoryRow> History { get; } = new(); // Used ONLY for runtime UI visualization
 
     public Weather CurrentWeather => WeatherGenerator.Generate(Clock.CurrentTime);
 
-    public SimulationEngine(SimulationClock clock, Neighbourhood neighbourhood, bool databaseEnabled)
+    public SimulationEngine(SimulationClock clock, Neighbourhood neighbourhood, int historyCapacity = 96)
     {
         Clock = clock;
         Neighbourhood = neighbourhood;
-        DatabaseEnabled = databaseEnabled;
+        HistoryCapacity = historyCapacity;
     }
 
     public void Step(bool IsPresenting = true)
@@ -49,11 +46,13 @@ public class SimulationEngine
             Neighbourhood.PeakWithoutBattery,
             Neighbourhood.PeakWithBattery);
 
-        if (DatabaseEnabled)
-            HistoryRepository.Insert(CurrentHistoryRow);
+        if (!IsPresenting)
 
-        if (IsPresenting) 
+            // In generate-data mode, save history to database
+            HistoryRepository.Insert(CurrentHistoryRow);
+        else
         {
+            // In presenting mode, print to console
             Console.Clear();
             Console.WriteLine($"Time: {CurrentHistoryRow.CurrentTime}");
             Console.WriteLine($"Season: {CurrentHistoryRow.Season}");
@@ -72,6 +71,11 @@ public class SimulationEngine
             Console.WriteLine($"Peak Load (Without Battery): {CurrentHistoryRow.PeakWithoutBatteryKwh:F2} kW");
             Console.WriteLine($"Peak Load (With Battery): {CurrentHistoryRow.PeakWithBatteryKwh:F2} kW");
 
+            // add current history row to in-memory history for UI visualization
+            History.Add(CurrentHistoryRow);
+
+            if (History.Count > HistoryCapacity)
+                History.RemoveAt(0);
         }
 
         Clock.Tick();

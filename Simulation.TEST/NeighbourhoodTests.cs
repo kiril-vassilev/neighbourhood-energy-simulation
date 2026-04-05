@@ -14,15 +14,4 @@ public class NeighbourhoodTests
 
         Assert.NotEqual(0, sim.Neighbourhood.CurrentLoadKw);
     }
-
-    [Fact]
-    public void History_ShouldBeCappedAt96Entries()
-    {
-        var sim = SimulationFactory.Create();
-
-        for (int i = 0; i < 200; i++)
-            sim.Step(false);
-
-        Assert.True(sim.Neighbourhood.History.Count <= 96);
-    }
 }

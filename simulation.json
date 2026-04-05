@@ -34,13 +34,11 @@
       ]
     },
     "pvSystem": {
-      "peakKw": 4,
-      "generationModel": "-peakKw * max(0, sin((hour - 6) / 12 * pi)) * solarFactor"
+      "peakKw": 4
     },
     "heatPump": {
       "offAboveTemperatureC": 18,
-      "powerKwPerDegreeBelowThreshold": 0.3,
-      "formula": "temperature > 18 ? 0 : (18 - temperature) * 0.3"
+      "powerKwPerDegreeBelowThreshold": 0.3
     },
     "homeEvCharger": {
       "chargingWindow": {
@@ -62,11 +60,7 @@
     "maxDischargeKw": 30,
     "targetLoadKw": 150,
     "efficiency": 0.95,    
-    "deadBandKw": 10,    
-    "control": {
-      "strategy": "threshold_peak_shaving",
-      "desiredPowerFormula": "if load > target then -(load-target), else if load < target then (target-load), then clamp to power and SoC constraints"
-    }
+    "deadBandKw": 10
   },
   "weather": {
     "seasonBaseTemperatureC": {
@@ -74,15 +68,14 @@
       "spring": 12,
       "summer": 22,
       "fall": 14
-    },
-    "solarFactorModel": "max(0, sin((hour - 6) / 12 * pi))"
+    }
   },
   "runtime": {
     "consoleLoopSleepMs": 200,
     "uiTimerIntervalMs": 500
   },
-  "database": {
-    "enabled": true,
-    "clearOnStart": true
+  "chatbot": {
+    "azureOpenAI_Endpoint": "",
+    "azureOpenAI_DeploymentName": ""
   }
 }

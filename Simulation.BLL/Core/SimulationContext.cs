@@ -1,6 +1,3 @@
-// =============================
-// Core/SimulationContext.cs
-// =============================
 using Simulation.BLL.Domain;
 
 namespace Simulation.BLL.Core;

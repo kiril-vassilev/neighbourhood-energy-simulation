@@ -1,6 +1,3 @@
-// =============================
-// Domain/Neighbourhood.cs
-// =============================
 using Simulation.BLL.Core;
 
 namespace Simulation.BLL.Domain;
@@ -9,8 +6,7 @@ public class Neighbourhood
 {
     public List<House> Houses { get; } = new();
     public List<PublicCharger> PublicChargers { get; } = new();
-    public int HistoryCapacity { get; set; } = 96;
-
+    
     public double CurrentLoadKw { get; private set; }
     public double TotalEnergyKWh { get; private set; }
 
@@ -21,7 +17,7 @@ public class Neighbourhood
     public double PeakWithBattery { get; private set; }
     
     // Used ONLY for runtime UI visualization, not for reporting or analysis
-    public List<(DateTime time, double load)> History { get; } = new();
+    public List<(DateTime time, double load, double loadWithBattery)> History { get; } = new();
 
     public void Update(SimulationContext context)
     {
@@ -53,10 +49,5 @@ public class Neighbourhood
 
         PeakWithoutBattery = Math.Max(PeakWithoutBattery, CurrentLoadKw);
         PeakWithBattery = Math.Max(PeakWithBattery, CurrentLoadWithBatteryKw);
-
-        History.Add((context.Time, CurrentLoadWithBatteryKw));
-
-        if (History.Count > HistoryCapacity)
-            History.RemoveAt(0);
     }
 }

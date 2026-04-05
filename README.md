@@ -23,21 +23,8 @@ The project is structured as follows:
 - **Simulation.DAL**: Data access layer; responsible for persisting and retrieving simulation history from the database
 - **Simulation.REPORT**: CLI reporting tool; generates summary, per-season, and tabular history reports from stored data
 - **Simulation.UI**: Blazor web UI that visualizes the live simulation, including current load, temperature, and 24-hour history charts
+- **Simulation.CHAT**: Interactive console chatbot that answers natural language questions about the simulation using AI-powered tools
 - **Simulation.TEST**: Unit test project covering energy calculations, domain models, and simulation behavior
-
-## Next Steps
-
-The next goal is to enable “talking to the data” by extending the simulation with data storage, aggregation, and AI-driven insights.
-
-## AI / LLM Integration
-
-* Feed aggregated data into an LLM to enable natural language queries
-
-Example questions:
-
-“What is the best time to use the battery?”
-“How much peak load reduction does the battery provide in winter?”
-“When does the neighbourhood export the most solar energy?”
 
 ## Vision
 
@@ -84,7 +71,6 @@ Rationale:
 Represents a typical grid-connected residential PV system without local storage.
 
 ## Heat Pump Model
-
 Heat pump consumption depends on ambient temperature:
 
 No consumption when temperature > 18°C
@@ -302,37 +288,22 @@ Show command help:
 dotnet run --project Simulation.BLL -- --help
 ```
 
-Run data generation mode (all variants are supported):
+Run data generation mode:
 
 ```bash
-dotnet run --project Simulation.BLL -- generate_data
-dotnet run --project Simulation.BLL -- generate-data
 dotnet run --project Simulation.BLL -- --generate-data
 ```
 
 ### Generate-data mode requirements
 
 - `simulation.endTime` must be set (not null).
-- `database.enabled` must be `true`.
 
-If one of these conditions is not met, Simulation.BLL exits with an error message.
+If this condition is not met, Simulation.BLL exits with an error message.
 
 ### Behavior by mode
 
 - Default mode: detailed console presentation + sleep delay (`runtime.consoleLoopSleepMs`).
 - Generate-data mode: no sleep, calls simulation steps without presentation output, and prints simple progress from 0% to 100%.
-
-### Optional: use a custom settings file
-
-You can point the app to a specific settings file with the `SIMULATION_SETTINGS_PATH` environment variable.
-
-PowerShell example:
-
-```powershell
-$env:SIMULATION_SETTINGS_PATH = "C:\path\to\simulation.json"
-dotnet run --project Simulation.BLL -- --help
-Remove-Item Env:SIMULATION_SETTINGS_PATH
-```
 
 ## Running the UI Visualization
 
@@ -389,13 +360,43 @@ dotnet run --project Simulation.REPORT -- help
 
 > **Note:** The database must be populated first by running `Simulation.BLL` in generate-data mode before reports can show data.
 
+## Running the Chatbot
+
+The `Simulation.CHAT` project is an interactive console chatbot that lets you ask natural language questions about the neighborhood energy simulation.
+
+Start the chatbot with:
+
+```bash
+dotnet run --project Simulation.CHAT
+```
+
+Once running, type a question and press Enter to receive a response. Type `quit` to exit.
+
+```
+Neighborhood Energy Simulation Chatbot
+Type your question and press Enter. Type 'quit' to exit.
+--------------------------------------------------
+You: What is the current battery state of charge?
+Bot: ...
+```
+
+> **Prerequisites:** The following fields must be configured in `simulation.json` before running the chatbot:
+> ```json
+> "chatbot": {
+>   "azureOpenAI_Endpoint": "<your Azure OpenAI endpoint>",
+>   "azureOpenAI_DeploymentName": "<your deployment name>"
+> }
+> ```
+> Authentication uses `DefaultAzureCredential` — ensure your environment is authenticated (e.g. via Azure CLI `az login`).
+
+> **Note:** The database should be populated first by running `Simulation.BLL` in generate-data mode so the chatbot has data to reason about.
+
 ## Configuration
 
 Simulation settings are centralized in the root `simulation.json` file.
 
 The runtime reads configuration from:
 
-1. `SIMULATION_SETTINGS_PATH` environment variable (if set)
 2. `simulation.json` found by walking up from the current working directory
 3. `simulation.json` found by walking up from the app base directory
 

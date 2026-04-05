@@ -1,6 +1,3 @@
-// =============================
-// Core/SimulationFactory.cs
-// =============================
 using Simulation.BLL.Domain;
 using Simulation.DAL;
 
@@ -8,7 +5,7 @@ namespace Simulation.BLL.Core;
 
 public static class SimulationFactory
 {
-    public static SimulationEngine Create(SimulationSettingsRoot? settings = null)
+    public static SimulationEngine Create(SimulationSettingsRoot? settings = null, bool isPresenting = true)
     {
         settings ??= SimulationSettingsLoader.LoadOrDefault();
 
@@ -28,13 +25,12 @@ public static class SimulationFactory
             .FirstOrDefault(r => r.DefaultPowerKw.HasValue)
             ?.DefaultPowerKw ?? 0.5;
 
-        if (settings.Database.Enabled && settings.Database.ClearOnStart)
+        // Clear history if not presenting (i.e., in generate-data mode) 
+        if (!isPresenting)
             HistoryRepository.ClearHistory();
 
         var neighbourhood = new Neighbourhood
         {
-            HistoryCapacity = settings.Simulation.HistoryPoints,
-
             Battery = new BatteryStorage
             {
                 CapacityKWh = settings.Battery.CapacityKWh,
@@ -85,6 +81,6 @@ public static class SimulationFactory
                 TimeSpan.FromMinutes(settings.Simulation.StepMinutes),
                 settings.Simulation.EndTime),
             neighbourhood, 
-            settings.Database.Enabled);
+            settings.Simulation.HistoryPoints);
     }
 }

@@ -109,45 +109,6 @@ public static class HistoryRepository
 		command.ExecuteNonQuery();
 	}
 
-	public static IReadOnlyList<HistoryRow> GetLatestHistory(int count = 96)
-	{
-		EnsureInitialized();
-
-		if (count <= 0)
-			return Array.Empty<HistoryRow>();
-
-		using var connection = new SqliteConnection(_connectionString);
-		connection.Open();
-
-		using var command = connection.CreateCommand();
-		command.CommandText = @"
-			SELECT
-				Id,
-				CurrentTime,
-				CurrentLoadKw,
-				Season,
-				Temperature,
-				CurrentLoadWithBatteryKw,
-				BatteryCurrentPowerKw,
-				BatteryStateOfChargeKwh,
-				TotalEnergyKwh,
-				PeakWithoutBatteryKwh,
-				PeakWithBatteryKwh
-			FROM History
-			ORDER BY Id DESC
-			LIMIT $count;";
-		command.Parameters.AddWithValue("$count", count);
-
-		var rows = new List<HistoryRow>(count);
-
-		using var reader = command.ExecuteReader();
-		while (reader.Read())
-			rows.Add(MapHistoryRow(reader));
-
-		rows.Reverse();
-		return rows;
-	}
-
 	public static IReadOnlyList<HistoryRow> GetAllHistory()
 	{
 		EnsureInitialized();
@@ -238,10 +199,6 @@ public static class HistoryRepository
 
 	private static string ResolveDbPath()
 	{
-		var configuredPath = Environment.GetEnvironmentVariable("SIMULATION_DB_PATH");
-		if (!string.IsNullOrWhiteSpace(configuredPath))
-			return configuredPath;
-
 		var slnDirectory = FindAncestorDirectoryContaining("Simulation.sln", Directory.GetCurrentDirectory())
 			?? FindAncestorDirectoryContaining("Simulation.sln", AppContext.BaseDirectory);
 

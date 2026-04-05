@@ -1,6 +1,3 @@
-// =============================
-// Domain/Assets/BaseLoad.cs
-// =============================
 using Simulation.BLL.Core;
 
 namespace Simulation.BLL.Domain;
