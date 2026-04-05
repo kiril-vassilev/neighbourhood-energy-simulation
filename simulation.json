@@ -75,7 +75,7 @@
     "uiTimerIntervalMs": 500
   },
   "chatbot": {
-    "azureOpenAI_Endpoint": "https://vassilev-3635-resource.openai.azure.com/",
-    "azureOpenAI_DeploymentName": "gpt-4o-mini"
+    "azureOpenAI_Endpoint": "",
+    "azureOpenAI_DeploymentName": ""
   }
 }
