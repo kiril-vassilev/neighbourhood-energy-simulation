@@ -39,6 +39,7 @@ else
             <h3>Total Energy</h3>
             <p>@historyRow.TotalEnergyKwh.ToString(format: "F2") kWh</p>
             <p>Battery SoC: @historyRow.BatteryStateOfChargeKwh.ToString(format: "F2") kWh</p>
+            <p>Battery State: @(engine.Neighbourhood.Battery?.State ?? "No Battery")</p>
         </div>
     </div>
 
@@ -71,11 +72,11 @@ else
 
     private async Task UpdateChart()
     {
-        var history = engine!.Neighbourhood.History;
+        var history = engine!.History;
 
-        var labels = history.Select(h => h.time.ToString("HH:mm")).ToArray();
-        var data = history.Select(h => h.load).ToArray();
-        var dataWithBattery = history.Select(h => h.loadWithBattery).ToArray();
+        var labels = history.Select(h => h.CurrentTime.ToString("HH:mm")).ToArray();
+        var data = history.Select(h => h.CurrentLoadKw).ToArray();
+        var dataWithBattery = history.Select(h => h.CurrentLoadWithBatteryKw).ToArray();
 
         await JSRuntime.InvokeVoidAsync("energyChart.render", data, dataWithBattery, labels);
     }

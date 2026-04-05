@@ -34,8 +34,6 @@ public static class SimulationFactory
 
         var neighbourhood = new Neighbourhood
         {
-            HistoryCapacity = settings.Simulation.HistoryPoints,
-
             Battery = new BatteryStorage
             {
                 CapacityKWh = settings.Battery.CapacityKWh,
@@ -85,6 +83,7 @@ public static class SimulationFactory
                 settings.Simulation.StartTime,
                 TimeSpan.FromMinutes(settings.Simulation.StepMinutes),
                 settings.Simulation.EndTime),
-            neighbourhood);
+            neighbourhood, 
+            settings.Simulation.HistoryPoints);
     }
 }

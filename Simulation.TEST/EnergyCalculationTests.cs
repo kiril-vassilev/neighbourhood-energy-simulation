@@ -25,4 +25,15 @@ public class EnergyCalculationTests
         // 2.5 kW * 0.25h = 0.625 kWh
         Assert.Equal(0.625, asset.TotalEnergyKWh, 3);
     }
+
+    [Fact]
+    public void History_ShouldBeCappedAt96Entries()
+    {
+        var sim = SimulationFactory.Create();
+
+        for (int i = 0; i < 200; i++)
+            sim.Step(false);
+
+        Assert.True(sim.History.Count <= 96);
+    }
 }

@@ -6,12 +6,15 @@ How can I run the visual simulation?
 General questions about the system and the simulation 
 ------------------------------------------------------
 What can you tell me about the simulation
+What can you tell me about the system in general?
 What are the current settings
+Show me the breakdown of the current settings
 
 Data analysis and reports questions
 ------------------------------------
 Please, show me the simulation summary
-Would it be a good idea, to increase the capacity of the battery to 1000 Kwh?
+Summarize it for me (The last simulaition summary report)
 During which season we use the most energy?
-How much can we reduce it without impacting the peak shaving?  
+Would it be a good idea, to increase the capacity of the battery to 1000 Kwh?
+How much can we reduce it (the capacity of the battery) without impacting the peak shaving?  
 How did you come up with 300 Kwh (40% reduction)?  Show me your reasoning

@@ -14,12 +14,16 @@ public class SimulationEngine
     public Neighbourhood Neighbourhood { get; }
     public HistoryRow? CurrentHistoryRow { get; private set; }
 
+    public int HistoryCapacity { get; } = 96; // Store last 96 records (24 hours with 15-minute steps) used INLY for runtime UI visualization
+    public List<HistoryRow> History { get; } = new(); // Used ONLY for runtime UI visualization, not for reporting or analysis
+
     public Weather CurrentWeather => WeatherGenerator.Generate(Clock.CurrentTime);
 
-    public SimulationEngine(SimulationClock clock, Neighbourhood neighbourhood)
+    public SimulationEngine(SimulationClock clock, Neighbourhood neighbourhood, int historyCapacity = 96)
     {
         Clock = clock;
         Neighbourhood = neighbourhood;
+        HistoryCapacity = historyCapacity;
     }
 
     public void Step(bool IsPresenting = true)
@@ -71,6 +75,11 @@ public class SimulationEngine
             Console.WriteLine($"Peak Load (Without Battery): {CurrentHistoryRow.PeakWithoutBatteryKwh:F2} kW");
             Console.WriteLine($"Peak Load (With Battery): {CurrentHistoryRow.PeakWithBatteryKwh:F2} kW");
 
+            // add current history row to in-memory history for UI visualization
+            History.Add(CurrentHistoryRow);
+
+            if (History.Count > HistoryCapacity)
+                History.RemoveAt(0);
         }
 
         Clock.Tick();
