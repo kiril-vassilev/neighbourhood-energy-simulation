@@ -8,6 +8,10 @@ double batteryCapacityKwh = settings.Battery.CapacityKWh;
 
 var rows = HistoryRepository.GetAllHistory();
 
+var chatbot = new Simulation.CHAT.Chatbot();
+await chatbot.InitializeAsync(settings);
+
+
 Console.WriteLine("Neighborhood Energy Simulation Chatbot");
 Console.WriteLine("Type your question and press Enter. Type 'quit' to exit.");
 Console.WriteLine(new string('-', 50));
@@ -23,7 +27,8 @@ while (true)
     if (string.IsNullOrWhiteSpace(input))
         continue;
 
-    Console.WriteLine($"Bot: {input}");
+    string response = await chatbot.AskQuestionAsync(input);
+    Console.WriteLine($"Bot: {response}");
     Console.WriteLine();
 }
 
