@@ -81,10 +81,6 @@
     "consoleLoopSleepMs": 200,
     "uiTimerIntervalMs": 500
   },
-  "database": {
-    "enabled": true,
-    "clearOnStart": true
-  },
   "chatbot": {
     "azureOpenAI_Endpoint": "",
     "azureOpenAI_DeploymentName": ""

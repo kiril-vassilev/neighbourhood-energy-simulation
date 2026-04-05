@@ -17,20 +17,14 @@ if (showHelp)
 }
 
 var settings = SimulationSettingsLoader.LoadOrDefault();
-var generateDataMode = normalizedArgs.Any(IsGenerateDataArg);
+var generateDataMode = normalizedArgs.Any(a => string.Equals(a, "--generate-data", StringComparison.OrdinalIgnoreCase));
 
-if (generateDataMode && !settings.Database.Enabled)
-{
-    Console.Error.WriteLine("generate_data mode requires database.enabled to be true.");
-    Environment.Exit(1);
-}
-
-var sim = SimulationFactory.Create(settings);
+var sim = SimulationFactory.Create(settings, isPresenting: !generateDataMode);
 var startTime = sim.Clock.CurrentTime;
 
 if (generateDataMode && !sim.Clock.EndTime.HasValue)
 {
-    Console.Error.WriteLine("generate_data mode requires Simulation.EndTime to be configured.");
+    Console.Error.WriteLine("generate-data mode requires Simulation.EndTime to be configured.");
     Environment.Exit(1);
 }
 
@@ -73,21 +67,12 @@ static int CalculateProgressPercent(DateTime startTime, DateTime currentTime, Da
     return (int)Math.Round(boundedRatio * 100d, MidpointRounding.AwayFromZero);
 }
 
-static bool IsGenerateDataArg(string arg)
-{
-    return string.Equals(arg, "generate_data", StringComparison.OrdinalIgnoreCase)
-        || string.Equals(arg, "generate-data", StringComparison.OrdinalIgnoreCase)
-        || string.Equals(arg, "--generate-data", StringComparison.OrdinalIgnoreCase);
-}
-
 static void PrintHelp()
 {
     Console.WriteLine("Usage: Simulation.BLL [options]");
     Console.WriteLine();
     Console.WriteLine("Options:");
-    Console.WriteLine("  generate_data      Run data generation mode (no sleep, progress output).");
-    Console.WriteLine("  generate-data      Alias for generate_data.");
-    Console.WriteLine("  --generate-data    Alias for generate_data.");
+    Console.WriteLine("  --generate-data    Run data generation mode (no sleep, progress output).");
     Console.WriteLine("  --help             Show this help message.");
 }
 

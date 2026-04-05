@@ -14,15 +14,12 @@ public class SimulationEngine
     public Neighbourhood Neighbourhood { get; }
     public HistoryRow? CurrentHistoryRow { get; private set; }
 
-    public bool DatabaseEnabled { set; get; }
-
     public Weather CurrentWeather => WeatherGenerator.Generate(Clock.CurrentTime);
 
-    public SimulationEngine(SimulationClock clock, Neighbourhood neighbourhood, bool databaseEnabled)
+    public SimulationEngine(SimulationClock clock, Neighbourhood neighbourhood)
     {
         Clock = clock;
         Neighbourhood = neighbourhood;
-        DatabaseEnabled = databaseEnabled;
     }
 
     public void Step(bool IsPresenting = true)
@@ -49,11 +46,13 @@ public class SimulationEngine
             Neighbourhood.PeakWithoutBattery,
             Neighbourhood.PeakWithBattery);
 
-        if (DatabaseEnabled)
-            HistoryRepository.Insert(CurrentHistoryRow);
+        if (!IsPresenting)
 
-        if (IsPresenting) 
+            // In generate-data mode, save history to database
+            HistoryRepository.Insert(CurrentHistoryRow);
+        else
         {
+            // In presenting mode, print to console
             Console.Clear();
             Console.WriteLine($"Time: {CurrentHistoryRow.CurrentTime}");
             Console.WriteLine($"Season: {CurrentHistoryRow.Season}");
