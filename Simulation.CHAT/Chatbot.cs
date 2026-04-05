@@ -57,9 +57,13 @@ public class Chatbot
         var readmePath = FindReadme();
         if (readmePath != null)
             _readmeContent = await File.ReadAllTextAsync(readmePath);
+
         string endpoint = settings.Chatbot.AzureOpenAI_Endpoint;
         string deploymentName = settings.Chatbot.AzureOpenAI_DeploymentName;    
     
+        if (string.IsNullOrWhiteSpace(endpoint) || string.IsNullOrWhiteSpace(deploymentName))
+             throw new InvalidOperationException("Azure OpenAI endpoint or deployment name is not configured. Chatbot cannot be initialized.");
+
         Agent = new AzureOpenAIClient(
             new Uri(endpoint),
             new DefaultAzureCredential())

@@ -380,6 +380,15 @@ You: What is the current battery state of charge?
 Bot: ...
 ```
 
+> **Prerequisites:** The following fields must be configured in `simulation.json` before running the chatbot:
+> ```json
+> "chatbot": {
+>   "azureOpenAI_Endpoint": "<your Azure OpenAI endpoint>",
+>   "azureOpenAI_DeploymentName": "<your deployment name>"
+> }
+> ```
+> Authentication uses `DefaultAzureCredential` — ensure your environment is authenticated (e.g. via Azure CLI `az login`).
+
 > **Note:** The database should be populated first by running `Simulation.BLL` in generate-data mode so the chatbot has data to reason about.
 
 ## Configuration
