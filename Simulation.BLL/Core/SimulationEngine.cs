@@ -1,7 +1,3 @@
-// =============================
-// Core/SimulationEngine.cs
-// =============================
-
 using Simulation.BLL.Domain;
 using Simulation.DAL;
 
@@ -14,8 +10,8 @@ public class SimulationEngine
     public Neighbourhood Neighbourhood { get; }
     public HistoryRow? CurrentHistoryRow { get; private set; }
 
-    public int HistoryCapacity { get; } = 96; // Store last 96 records (24 hours with 15-minute steps) used INLY for runtime UI visualization
-    public List<HistoryRow> History { get; } = new(); // Used ONLY for runtime UI visualization, not for reporting or analysis
+    public int HistoryCapacity { get; } = 96; // Store last 96 records (24 hours with 15-minute steps) used ONLY for runtime UI visualization
+    public List<HistoryRow> History { get; } = new(); // Used ONLY for runtime UI visualization
 
     public Weather CurrentWeather => WeatherGenerator.Generate(Clock.CurrentTime);
 

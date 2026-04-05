@@ -1,6 +1,3 @@
-// =============================
-// Core/SimulationClock.cs
-// =============================
 namespace Simulation.BLL.Core;
 
 public class SimulationClock

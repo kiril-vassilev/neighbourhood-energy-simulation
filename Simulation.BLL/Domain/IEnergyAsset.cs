@@ -1,6 +1,3 @@
-// =============================
-// Domain/Interfaces/IEnergyAsset.cs
-// =============================
 using Simulation.BLL.Core;
 
 namespace Simulation.BLL.Domain;

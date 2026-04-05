@@ -26,20 +26,6 @@ public sealed record ReportStats(
 
 public static class ReportHelper
 {
-	public static double InferStepHours(IReadOnlyList<HistoryRow> rows)
-	{
-		if (rows.Count < 2)
-			return 0.25;
-
-		var minPositive = rows
-			.Zip(rows.Skip(1), (a, b) => (b.CurrentTime - a.CurrentTime).TotalHours)
-			.Where(hours => hours > 0)
-			.DefaultIfEmpty(0.25)
-			.Min();
-
-		return minPositive;
-	}
-
     public static double HighPeakHoursPerMonth_WithoutBattery(IReadOnlyList<HistoryRow> rows, double stepHours = 0.25)
     {
         // Top 10% threshold

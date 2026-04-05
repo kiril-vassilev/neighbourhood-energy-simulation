@@ -1,6 +1,3 @@
-// =============================
-// Domain/House.cs
-// =============================
 using Simulation.BLL.Core;
 
 namespace Simulation.BLL.Domain;

@@ -1,7 +1,4 @@
-﻿// =============================
-// Program.cs
-// =============================
-using Simulation.BLL.Core;
+﻿using Simulation.BLL.Core;
 using Simulation.DAL;
 
 var normalizedArgs = args

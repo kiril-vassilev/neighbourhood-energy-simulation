@@ -1,6 +1,3 @@
-// =============================
-// Domain/Assets/PublicCharger.cs
-// =============================
 using Simulation.BLL.Core;
 
 namespace Simulation.BLL.Domain;

@@ -1,6 +1,3 @@
-// =============================
-// Core/SimulationFactory.cs
-// =============================
 using Simulation.BLL.Domain;
 using Simulation.DAL;
 
