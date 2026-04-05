@@ -1,6 +1,7 @@
 using Azure.AI.OpenAI;
 using Azure.Identity;
 using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
 using OpenAI.Chat;
 
 using Simulation.BLL.Core;
@@ -14,11 +15,22 @@ public class Chatbot
     public AgentSession? Session { get; private set; } 
 
     private SimulationSettingsRoot? _settings;
+    private Tools? _tools;
+
+    private string GetInstructions() =>
+        "You are a helpful assistant that answers questions about the neighborhood energy simulation. " +
+        "Use the following information to answer questions:\n\n" +
+        $"Simulation starts at: {_settings?.Simulation.StartTime}\n" +
+        $"Simulation step minutes: {_settings?.Simulation.StepMinutes}\n" +
+        $"Battery capacity (kWh): {_settings?.Battery.CapacityKWh}\n" +
+        "Use GetHistorySummaryReportJson to get a JSON report summarizing the simulation history.\n" +
+        "You can also use GetHistorySummaryPerSeasonReportJson to get a JSON report summarizing the simulation history per season.";
 
 
     public async Task InitializeAsync(SimulationSettingsRoot settings)
     {
         _settings = settings;
+        _tools = new Tools(_settings);
 
         string endpoint = settings.Chatbot.AzureOpenAI_Endpoint;
         string deploymentName = settings.Chatbot.AzureOpenAI_DeploymentName;    
@@ -27,7 +39,14 @@ public class Chatbot
             new Uri(endpoint),
             new DefaultAzureCredential())
             .GetChatClient(deploymentName)
-            .AsAIAgent(instructions: "You are good at telling jokes.", name: "Joker");
+            .AsAIAgent(
+                instructions: GetInstructions(), 
+                name: "SimulationAssistant",
+                tools: [
+                    AIFunctionFactory.Create(_tools.GetHistorySummaryReportJsonAsync, "GetHistorySummaryReportJson", "Gets a JSON report summarizing the simulation history."),
+                    AIFunctionFactory.Create(_tools.GetHistorySummaryPerSeasonReportJsonAsync, "GetHistorySummaryPerSeasonReportJson", "Gets a JSON report summarizing the simulation history per season.")
+                ]
+            );
 
         Session = await Agent.CreateSessionAsync();
     }

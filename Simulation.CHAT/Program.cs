@@ -2,15 +2,11 @@ using Simulation.BLL.Core;
 using Simulation.DAL;
 using Simulation.REPORT;
 
-var settings = SimulationSettingsLoader.LoadOrDefault();
-int stepMinutes = settings.Simulation.StepMinutes;
-double batteryCapacityKwh = settings.Battery.CapacityKWh;
 
-var rows = HistoryRepository.GetAllHistory();
+var settings = SimulationSettingsLoader.LoadOrDefault();
 
 var chatbot = new Simulation.CHAT.Chatbot();
 await chatbot.InitializeAsync(settings);
-
 
 Console.WriteLine("Neighborhood Energy Simulation Chatbot");
 Console.WriteLine("Type your question and press Enter. Type 'quit' to exit.");
