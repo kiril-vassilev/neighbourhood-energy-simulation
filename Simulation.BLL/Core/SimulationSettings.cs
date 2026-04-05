@@ -11,6 +11,7 @@ public class SimulationSettingsRoot
     public WeatherSettings Weather { get; set; } = new();
     public RuntimeSettings Runtime { get; set; } = new();
     public DatabaseSettings Database { get; set; } = new();
+    public ChatbotSettings Chatbot { get; set; } = new();
 }
 
 public class SimulationSettings
@@ -127,6 +128,12 @@ public class DatabaseSettings
 {
     public bool Enabled { get; set; } = true;
     public bool ClearOnStart { get; set; } = true;
+}
+
+public class ChatbotSettings
+{
+    public string AzureOpenAI_Endpoint { get; set; } = string.Empty;
+    public string AzureOpenAI_DeploymentName { get; set; } = string.Empty;
 }
 
 public static class SimulationSettingsLoader
