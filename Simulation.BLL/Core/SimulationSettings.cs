@@ -12,6 +12,19 @@ public class SimulationSettingsRoot
     public RuntimeSettings Runtime { get; set; } = new();
     public DatabaseSettings Database { get; set; } = new();
     public ChatbotSettings Chatbot { get; set; } = new();
+
+    public string GetSimulationSettingsJson()
+    {
+        var projection = new
+        {
+            Simulation,
+            Neighbourhood,
+            Assets,
+            Battery,
+            Weather
+        };
+        return JsonSerializer.Serialize(projection, new JsonSerializerOptions { WriteIndented = false });
+    }
 }
 
 public class SimulationSettings
@@ -149,15 +162,6 @@ public static class SimulationSettingsLoader
 
         try
         {
-            var configuredPath = Environment.GetEnvironmentVariable("SIMULATION_SETTINGS_PATH");
-            if (!string.IsNullOrWhiteSpace(configuredPath) && File.Exists(configuredPath))
-            {
-                var configuredJson = File.ReadAllText(configuredPath);
-                var configuredSettings = JsonSerializer.Deserialize<SimulationSettingsRoot>(configuredJson, options);
-                if (configuredSettings != null)
-                    return configuredSettings;
-            }
-
             var fromCurrentDirectory = FindInCurrentDirectoryTree();
             if (fromCurrentDirectory != null)
             {

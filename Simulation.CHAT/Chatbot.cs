@@ -20,9 +20,7 @@ public class Chatbot
     private string GetInstructions() =>
         "You are a helpful assistant that answers questions about the neighborhood energy simulation. " +
         "Use the following information to answer questions:\n\n" +
-        $"Simulation starts at: {_settings?.Simulation.StartTime}\n" +
-        $"Simulation step minutes: {_settings?.Simulation.StepMinutes}\n" +
-        $"Battery capacity (kWh): {_settings?.Battery.CapacityKWh}\n" +
+        $"These are the simulation settings : {_settings?.GetSimulationSettingsJson()}\n" +
         "Use GetHistorySummaryReportJson to get a JSON report summarizing the simulation history.\n" +
         "You can also use GetHistorySummaryPerSeasonReportJson to get a JSON report summarizing the simulation history per season.";
 
