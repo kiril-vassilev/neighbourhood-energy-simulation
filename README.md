@@ -11,7 +11,10 @@ This project simulates various energy assets and their interactions within a nei
 - Electric vehicle (EV) chargers
 - Heat pumps for heating/cooling
 - Public charging stations
+- Neighbourhood battery storage for peak shaving
 - Weather simulation and its impact on energy usage
+
+Beyond simulation, the project serves as an **interactive decision-support tool**. Through the AI-powered chatbot interface (`Simulation.CHAT`), users can explore energy scenarios and optimization strategies using natural language — querying historical data, comparing seasonal patterns, and reasoning about the impact of different configurations without writing any code.
 
 ## Architecture
 
@@ -25,10 +28,6 @@ The project is structured as follows:
 - **Simulation.UI**: Blazor web UI that visualizes the live simulation, including current load, temperature, and 24-hour history charts
 - **Simulation.CHAT**: Interactive console chatbot that answers natural language questions about the simulation using AI-powered tools
 - **Simulation.TEST**: Unit test project covering energy calculations, domain models, and simulation behavior
-
-## Vision
-
-Transform the simulation into an interactive decision-support tool, where users can explore energy scenarios and optimization strategies through natural language.
 
 
 ## Simulation Assumptions
@@ -230,15 +229,6 @@ No EV state-of-charge tracking
 No detailed building thermal modeling
 Battery uses a simple heuristic (not optimized or predictive)
 
-## Design Philosophy
-
-The simulation prioritizes:
-
-Clarity and modular design (asset-based architecture)
-Deterministic behavior (fixed random seed)
-Extensibility (easy to add new assets or strategies)
-Explainability over physical accuracy
-
 ## Data Model
 
 The simulation uses a modular, asset-based model:
@@ -376,7 +366,7 @@ Once running, type a question and press Enter to receive a response. Type `quit`
 Neighborhood Energy Simulation Chatbot
 Type your question and press Enter. Type 'quit' to exit.
 --------------------------------------------------
-You: What is the current battery state of charge?
+You: During which season do we use the most energy?
 Bot: ...
 ```
 

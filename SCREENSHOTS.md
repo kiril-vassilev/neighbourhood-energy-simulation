@@ -52,7 +52,7 @@ Following the full summary, the chatbot produces a concise narrative overview of
 
 ---
 
-### During which season we use the most energy?
+### During which season do we use the most energy?
 The chatbot breaks down energy usage by season (Winter, Spring, Summer, Fall) and concludes that Winter has the highest total consumption and peak demand, driven by greater heating loads during colder months.
 
 ![analyse-during-which-season-we-use-the-most-energy](Screenshots/analyse-during-which-season-we-use-the-most-energy.jpg)

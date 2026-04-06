@@ -14,7 +14,7 @@ Data analysis and reports questions
 ------------------------------------
 Please, show me the simulation summary
 Summarize it for me (The last simulaition summary report)
-During which season we use the most energy?
+During which season do we use the most energy?
 Would it be a good idea, to increase the capacity of the battery to 1000 Kwh?
 How much can we reduce it (the capacity of the battery) without impacting the peak shaving?  
 How did you come up with 300 Kwh (40% reduction)?  Show me your reasoning
