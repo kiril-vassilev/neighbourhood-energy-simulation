@@ -1,4 +1,3 @@
-# Neighborhood Energy Simulation – Show me your prompts, and I'll show you mine
 
 ![Neighborhood Energy Simulation](neighborhood-energy-simulation-project-2.png)
 
