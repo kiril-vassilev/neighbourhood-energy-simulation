@@ -412,7 +412,7 @@ It's knowing **what to build yourself** and **what to delegate to the machine**.
 
 Please, check out the repository.
 
-There is also a more detailed list of [snapshots](../SCREENSHOTS.md) (It did it 😊)
+There is also a more detailed list of [snapshots](https://github.com/kiril-vassilev/neighbourhood-energy-simulation/blob/main/SCREENSHOTS.md)] (It did it 😊)
 
 Thanks for reading it.
 
