@@ -85,7 +85,7 @@ No decisions. No actions. No value.
 
 We love pretty dashboards — but unless they answer a question or trigger an action, they're just… decoration.
 
-Nobody sits there watching animated invoices fly across the screen.
+Nobody sits there watching animations and dancing diagrams like it’s a movie.
 
 ---
 
